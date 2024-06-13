@@ -79,18 +79,6 @@ async function setTopImage(data:{topimage:string}){
     filename = nanoid() + "."+(ext=="svg+xml"?"svg":ext);
     file = dataURLtoFile(data.topimage, filename);
     buffer = Buffer.from(await file.arrayBuffer());
-    let uploadsDir = path.join(process.cwd(), 'public');
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir);
-        }
-    uploadsDir=path.join(process.cwd(), 'public/uploads');
-    if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir);
-        }
-    uploadsDir=path.join(process.cwd(), 'public/uploads/images');
-    if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir);
-        }
     await writeFile(
         path.join(process.cwd(), "public/uploads/images/" + filename),
         buffer
