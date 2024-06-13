@@ -11,7 +11,7 @@ export default function SearchModal(){
     const [loadingTop, setLoadingTop] = useState(false);
     const [loadingBottom, setLoadingBottom] = useState(false);
     const [shouldScrollFetch, setShouldScrollFetch] = useState(true);
-    const [searchArticles, setSearchArticles] = useState<[Article?]>([]);
+    const [searchArticles, setSearchArticles] = useState<Article[]>([]);
   function closeSearchModal(){
     const closeButton:(HTMLButtonElement | null | undefined)=document.getElementById("searchModal")?.querySelector(".btn-close");
     closeButton?.click();
@@ -21,6 +21,7 @@ export default function SearchModal(){
       console.log(searchTerm)
       if(searchTerm!=""){
         axios.get(`/api/search_articles?query=${searchTerm}&datetime=NONE`).then((res)=>{
+          console.log(res.data);
           setSearchArticles(res.data);
           if(res.data.length==0){
             setSearchAlertMessage("No articles found");
@@ -36,6 +37,14 @@ export default function SearchModal(){
 
     return () => clearTimeout(delayDebounceFn)
   }, [searchTerm])
+
+const onClickSearchArticle=()=>{closeSearchModal(); const mainWin=document.getElementById('mainWindowDiv');
+mainWin?.querySelector('#articles')?.classList.add('d-none');
+mainWin?.querySelector('.alert')?.classList.add('d-none');
+mainWin?.querySelector('.content-load-spinner')?.classList.remove('d-none');
+mainWin?.querySelector('.content-load-spinner')?.classList.add('d-flex');
+
+};
 
   function handleSearchScroll(e:React.UIEvent<HTMLDivElement>){
     const element=(e.target as HTMLDivElement);
@@ -75,7 +84,7 @@ export default function SearchModal(){
         {
           searchArticles.map((article:any)=>{
             return (
-              <NewsCard key={article._id} article={article} onClick={closeSearchModal} />
+              <NewsCard key={article._id} article={article} onClick={onClickSearchArticle} />
             )
           })
         }

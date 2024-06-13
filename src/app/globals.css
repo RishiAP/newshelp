@@ -1,4 +1,5 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.min.css";
 
 /* stylelint-disable @stylistic/selector-list-comma-newline-after */
 
@@ -160,4 +161,17 @@ body {
 }
 .ql-snow .ql-editor img{
     width: auto !important;
+}
+
+:root[data-bs-theme="dark"]{
+  --bs-visited-link-color:#c58af9;
+}
+:root[data-bs-theme="light"]{
+  --bs-visited-link-color:#681da8;
+}
+:root{
+  --toastify-toast-width: 450px !important;
+}
+a:visited{
+  color: var(--bs-visited-link-color);
 }

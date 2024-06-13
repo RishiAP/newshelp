@@ -40,6 +40,10 @@ const NewsSchema=new Schema(
             type:Date,
             default:Date.now
         },
+        dateUpdated:{
+            type:Date,
+            default:null
+        },
         // priority:{
         //     enum:['TopMost','Top',null]
         // },

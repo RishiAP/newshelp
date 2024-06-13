@@ -1,142 +1,223 @@
 "use client";
-import React, { ChangeEvent, FormEventHandler, useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import React, { useState, useEffect, ReactElement, FormEvent } from "react";
 import AdminNavbar from "@/components/AdminNavbar";
-import CreateCategoryModal from "@/components/CreateCategoryModal";
-import axios from "axios";
-import Image from "next/image";
+import NewsCRUDComponent from "@/components/NewsCRUDComponent";
+import axios, { AxiosPromise } from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import ContentLoadSpinner from "@/components/ContentLoadSpinner";
+import Link from "next/link";
 
-const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
+export type NewsContent = {
+  title: string,
+  topimage: string,
+  category: string | { _id: Object; value: string },
+  content: Object,
+  slug: string,
+};
 
 export default function Home() {
-  const [formData, setFormData] = useState({title:"",topimage:"",category:"",content:{}});
-  const [categories, setCategories] = useState([]);
-  useEffect(()=>{
-    async function getCategories(){
-      setCategories((await axios.get('/api/category')).data);
+  const [formData, setFormData] = useState<NewsContent>({
+    title: "",
+    topimage: "",
+    category: "",
+    content: {},
+    slug: "",
+  });
+  const [actionType, setActionType] = useState("create");
+  const [newsSlug, setNewsSlug] = useState("");
+  const [showEditor, setShowEditor] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setFormData({
+      title: "",
+      topimage: "",
+      category: "",
+      content: {},
+      slug: "",
+    });
+    if (actionType === "create") {
+      setShowEditor(true);
     }
-    getCategories();
-  }, [])
-  
-
-  const quillModules = {
-    toolbar: [
-      ["bold", "italic", "underline", "strike"], // toggled buttons
-      ["blockquote", "code-block"],
-      ["link", "image", "video", "formula"],
-
-      [{ header: 1 }, { header: 2 }], // custom button values
-      [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-      [{ script: "sub" }, { script: "super" }], // superscript/subscript
-      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-      [{ direction: "rtl" }], // text direction
-
-      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-      [{ font: [] }],
-      [{ align: [] }],
-
-      ["clean"],
-    ],
-  };
-
-  const handleTitleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({...formData,title:e.currentTarget.value});
-  };
-  const handleCategoryChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({...formData,category:e.currentTarget.value});
-  };
-  const handleTopImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(e.currentTarget.files!=null){
-        var reader = new FileReader();
-        reader.readAsDataURL(e.currentTarget.files[0]);
-        reader.onload = function () {
-          setFormData({...formData,topimage:reader.result?reader.result.toString():""});
-        };
-        reader.onerror = function (error) {
-          console.log('Error: ', error);
-        };
+    else{
+      setShowEditor(false);
     }
-  };
-  const handleEditorChange = (content:any, delta:any, source:any, editor:any) => {
-    setFormData({...formData,content:editor.getContents()});
-    console.log(editor.getContents());
-  };
+    toast.dismiss();
+  }, [actionType]);
 
-  const handleSubmit = (e: any) => {
+  const handlePublish = (e: FormEvent) => {
     e.preventDefault();
-    fetch('/api/add_news',{
-      method:"POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body:JSON.stringify(formData)
-    })
-    .then(async response =>{
-      console.log(await response.json());
-    })
+    e.currentTarget.querySelector('fieldset')?.setAttribute("disabled","true");
+    toast.dismiss();
+    const toastId=toast.loading("Publishing article... 🕒");
+    axios.post("/api/edit_news", formData).then((res) => {
+      if(res.status==200)
+      toast.update(toastId,{render:<>Article published successfully! 🎉 <Link href={`/${res.data.slug}`} target="_blank" rel="noreferrer">View Article</Link></>,type:"success",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+    }).catch((err) => {
+      if(err.response.data.error.code==11000){
+        toast.update(toastId,{render:"Article with same title already exists! ☹️",type:"warning",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+      }
+      else{
+        toast.update(toastId,{render:"Oops! Something went wrong. 🤯",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+      }
+      console.log(err);
+    }).finally(function (){
+      document.getElementById("articleControlForm")?.querySelector('fieldset')?.removeAttribute("disabled");
+      });
+      
   };
+  const handleUpdate =async (e: FormEvent) => {
+    e.preventDefault();
+    e.currentTarget.querySelector('fieldset')?.setAttribute("disabled","true");
+    toast.dismiss();
+    const toastId=toast.loading("Updating article... 🕒");
+    axios.put(`/api/edit_news?slug=${newsSlug}`, formData).then((res) => {
+      if(res.status==200)
+        toast.update(toastId,{render:<>Article updated successfully! 🎉 <Link href={`/${res.data.slug}`} target="_blank" rel="noreferrer">View Article</Link></>,type:"success",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+    }).catch((err) => {
+      toast.update(toastId,{render:"Oops! Something went wrong. 🤯",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+      console.log(err);
+      }).finally(function (){
+        document.getElementById("articleControlForm")?.querySelector('fieldset')?.removeAttribute("disabled");
+    });
+
+  };
+  const handleDelete = (e: any) => {
+    e.preventDefault();
+    toast.dismiss();
+    const deletePromise=axios.delete(`/api/edit_news?slug=${newsSlug}`);
+    asyncToast(deletePromise,"Deleting article... 🕒","Article deleted successfully! 🎉","Oops! Something went wrong. 🤯");
+    deletePromise.then((res) => {
+      if(res.data.slug===formData.slug){
+        setFormData({
+          title: "",
+          topimage: "",
+          category: "",
+          content: {},
+          slug: ""
+        });
+        showEditor && setShowEditor(false);
+        const articleURL:any=document.getElementById("articleURL");
+        articleURL.value="";
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+
+  };
+
+  useEffect(() => {
+    const delayDebounceFn=setTimeout(() => {
+      if(newsSlug=="") return;
+      axios
+      .get(`/api/edit_news?slug=${newsSlug}`)
+      .then((res) => {
+        console.log(res.data);
+        if(res.data!=null){
+          const fetchedData = res.data;
+          fetchedData.category = fetchedData.category.value;
+          setFormData(fetchedData);
+          setShowEditor(true);
+        }
+        else{
+          displayMsg("error","Article not found!",undefined,3000);
+        }
+        setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },1000);
+    return () => clearTimeout(delayDebounceFn);
+  },[newsSlug]);
+
+  const displayMsg=(type:string,msg:string,toastId:undefined|string=undefined,autoClose:number|false=5000)=>{
+    switch(type){
+      case "success":
+        toast.success(msg,{position: "top-center",autoClose,toastId});
+        break;
+      case "error":
+        toast.error(msg,{position: "top-center",autoClose,toastId});
+        break;
+      default:
+        toast(msg,{position: "top-center",autoClose,toastId});
+    }
+  }
+
+  const asyncToast=(p:AxiosPromise,pending:string|ReactElement,success:string|ReactElement,error:string|ReactElement)=>{
+    toast.promise(
+      p,
+      {
+        pending: {
+          render: <>
+            <p className="m-0 text-center">{pending}</p>
+          </>
+        },
+        success: {
+          render: <>
+            <p className="m-0 text-center">{success}</p>
+            
+          </>,
+        },
+        error:{
+          render:<>
+            <p className="m-0 text-center">{error}</p>
+          </>
+        }
+      },
+      {
+        autoClose: false,
+        position: "top-center"
+      }
+      );
+  }
 
   return (
     <>
-    <AdminNavbar/>
-    <CreateCategoryModal setCategories={setCategories} categories={categories}/>
-    <main className="h-100">
-      <div className="container h-100">
-        <h1>Create a new News Post</h1>
-        <form className="d-flex flex-column" onSubmit={handleSubmit}>
-          <label htmlFor="newsTitle" className="form-label">
-            Title
-          </label>
-          <input
-            type="text"
-            className="form-control mb-3"
-            id="newsTitle"
-            onChange={handleTitleChange}
-            placeholder="Enter title of the news"
-            required
-          />
-          <label htmlFor="categorySelect" className="form-label">Category</label>
-          <select className="form-select mb-3" id="categorySelect" aria-label="Default select example" onChange={handleCategoryChange} defaultValue={0} required>
-  <option value={0} disabled>Select Category</option>
-  {
-    categories.map((category:any) => {
-      return <option key={category._id} value={category.value}>{category.value}</option>
-    })
-  }
-</select>
-<div className="mb-3">
-  <label htmlFor="formFile" className="form-label">Top Image</label>
-  <input className="form-control" type="file" id="formFile" accept="image/*" required onInput={handleTopImage}/>
-</div>
-<div className="d-flex justify-content-center w-100">
-{
-  formData.topimage===""?null:<Image src={formData.topimage} width={0}
-  height={0}
-  sizes="100vw"
-  style={{ maxWidth: '100%', width:"auto", height: 'auto' }} alt=""/>
-}
-</div>
-          <label htmlFor="newsContent" className="form-label">
-            Content
-          </label>
-          <div className="">
-            <QuillEditor
-              value={formData.content}
-              onChange={handleEditorChange}
-              modules={quillModules}
-              id="newsContent"
-              className="w-full h-[70%] mt-10 bg-white"
+      <AdminNavbar actionType={actionType} setActionType={setActionType} />
+      <main className="h-100">
+        <div className="container h-100">
+          <h1>
+            {actionType === "create"
+              ? "Create a News Post"
+              : actionType === "update"
+              ? "Update an Article"
+              : "Delete an Article"}
+          </h1>
+          {actionType != "create" && (
+            <div>
+              <label htmlFor="newsTitle" className="form-label">
+                News URL
+              </label>
+              <input
+                type="text"
+                className="form-control mb-3"
+                id="articleURL"
+                onInput={(e)=>{
+                  setNewsSlug(e.currentTarget.value.split("/")[3]);
+                  showEditor && setShowEditor(false);
+                  setLoading(true);
+                }}
+                placeholder="Enter news URL"
+                required
+              />
+            </div>
+          )}
+          {
+            <ContentLoadSpinner loading={loading} classProperties="w-100" />
+          }
+          {showEditor && (
+            <NewsCRUDComponent
+              type={actionType}
+              handleSubmit={actionType === "create" ? handlePublish : actionType === "update" ? handleUpdate : handleDelete}
+              formData={formData}
+              setFormData={setFormData}
             />
-          </div>
-          <button type="submit" className="btn btn-success btn-lg mt-3">Publish</button>
-        </form>
-      <button type="button" className="btn btn-link mt-3" data-bs-toggle="modal" data-bs-target="#createCategoryModal">Create a new category</button>
-      </div>
-    </main>
+          )}
+        </div>
+        <ToastContainer theme="dark" draggablePercent={60} position="top-center" draggable />
+      </main>
     </>
-  );
+  )
 }

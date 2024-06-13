@@ -7,12 +7,12 @@ import Navbar from '@/components/Navbar';
 connect();
 export default async function Page({params}:{params:{newsSlug:string}}) {
   console.log(params)
-  const response=JSON.parse(JSON.stringify(await News.findOne({slug:params.newsSlug})));
+  const response=JSON.parse(JSON.stringify(await News.findOneAndUpdate({slug:params.newsSlug},{$inc:{views:1}},{new:true})));
   return (
     <>
     <Navbar currentActive='' />
       <div className="container">
-      <MainWindow news={response} newsExist={true} articles={[]} />
+      <MainWindow news={response} newsExist={true} articles={[]} alertMessage='' loading={false} showRescents={true} />
       </div>
       <Footer/>
     </>

@@ -1,9 +1,7 @@
-import { Inter } from "next/font/google";
 import './globals.css';
 import BootstrapClient from "@/components/BootstrapClient";
 import ThemeChanger from "@/components/ThemeChanger";
 
-const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children
@@ -12,7 +10,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <ThemeChanger/>
         {children}</body>
       <BootstrapClient/>

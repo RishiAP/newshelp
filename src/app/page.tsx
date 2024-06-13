@@ -10,7 +10,7 @@ export default function Home() {
       <Navbar currentActive=""/>
       <div className="container">
         <TopNews/>
-        <MainWindow news={{title:"",content:{},metadesc:"",topimage:"",category:"",date:""}} newsExist={false} articles={[]}/>
+        <MainWindow newsExist={false} articles={[]}/>
       </div>
       <Footer/>
     </>

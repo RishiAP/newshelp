@@ -1,67 +1,94 @@
 "use client";
-import React from 'react'
+import { Article } from '@/app/categories/[category]/page';
+import axios from 'axios';
+import { get } from 'http';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react'
+import { timeAgo } from './NewsItem';
+import Image from 'next/image';
 
-const SideElement = () => {
+const SideElement = (props:{setLoading?:React.Dispatch<React.SetStateAction<boolean>>,showRecents:boolean}) => {
+  const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function getYearsAndMonths(startDate:string, endDate = new Date()):{year:number,month:number}[] {
+    const result = [];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+  
+    let currentYear = start.getFullYear();
+    let currentMonth = start.getMonth(); // 0 = January, 11 = December
+  
+    while (currentYear < end.getFullYear() || (currentYear === end.getFullYear() && currentMonth <= end.getMonth())) {
+      result.push({ year: currentYear, month: currentMonth + 1 }); // month + 1 for 1-indexed month
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+    }
+  
+    return result.reverse();
+  }
+  
+  const loadLoader=()=>{
+    if(props.setLoading)
+      props.setLoading(true);
+    else{
+      document.getElementById("mainWindowDiv")?.querySelector(".content-load-spinner")?.classList.remove("d-none");
+      document.getElementById("mainWindowDiv")?.querySelector(".content-load-spinner")?.classList.add("d-flex");
+    }
+  }
+  const [sideArticles, setSideArticles] = useState<Article[]>([]);
+  useEffect(()=>{
+    if(props.showRecents){
+      axios.get(`/api/get_articles?type=recent&slug_present=${window.location.href.split("/")[3]}`).then((res) => {
+        setSideArticles(res.data);
+        console.log(res.data);
+      }).catch((err)=>{
+        console.log(err);
+      });
+    }
+  },[])
+
   return (
     <div className="col-md-4">
       <div className="position-sticky" style={{top:"2rem"}}>
-        <div className="p-4 mb-3 bg-body-tertiary rounded">
+        <div className={`${props.showRecents?"":"d-none "}p-4 mb-3 bg-body-tertiary rounded`}>
           <h4 className="fst-italic">About</h4>
           <p className="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
         </div>
 
-        <div>
+        <div className={props.showRecents?"":"d-none"}>
           <h4 className="fst-italic">Recent posts</h4>
           <ul className="list-unstyled">
-            <li>
-              <a className="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                <svg className="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
-                <div className="col-lg-8">
-                  <h6 className="mb-0">Example blog post title</h6>
-                  <small className="text-body-secondary">January 15, 2024</small>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a className="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                <svg className="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
-                <div className="col-lg-8">
-                  <h6 className="mb-0">This is another blog post title</h6>
-                  <small className="text-body-secondary">January 14, 2024</small>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a className="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                <svg className="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
-                <div className="col-lg-8">
-                  <h6 className="mb-0">Longer blog post title: This one has multiple lines!</h6>
-                  <small className="text-body-secondary">January 13, 2024</small>
-                </div>
-              </a>
-            </li>
+            {
+              sideArticles.map((article:Article) => {
+                return <li key={article.slug}>
+                <Link className="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href={`/${article.slug}`} onClick={loadLoader} >
+                <Image src={article.topimage} alt={article.title} width={100} height={100} style={{height:"auto",width:"100%"}} className="rounded" />
+                  <div className="col-lg-8">
+                    <h6 className="mb-0">{article.title}</h6>
+                    <small className="text-body-secondary">{timeAgo(article.date)}</small>
+                  </div>
+                </Link>
+              </li>
+              })
+            }
           </ul>
         </div>
 
         <div className="p-4">
           <h4 className="fst-italic">Archives</h4>
           <ol className="list-unstyled mb-0">
-            <li><a href="#">March 2021</a></li>
-            <li><a href="#">February 2021</a></li>
-            <li><a href="#">January 2021</a></li>
-            <li><a href="#">December 2020</a></li>
-            <li><a href="#">November 2020</a></li>
-            <li><a href="#">October 2020</a></li>
-            <li><a href="#">September 2020</a></li>
-            <li><a href="#">August 2020</a></li>
-            <li><a href="#">July 2020</a></li>
-            <li><a href="#">June 2020</a></li>
-            <li><a href="#">May 2020</a></li>
-            <li><a href="#">April 2020</a></li>
+            {
+              getYearsAndMonths("2024-05-01").map((yearMonth:{year:number,month:number})=>{
+                return <li key={yearMonth.year+yearMonth.month}><Link href={`/archives/${yearMonth.year}/${months[yearMonth.month-1]}`} onClick={loadLoader}>{months[yearMonth.month-1]+" "+yearMonth.year}</Link></li>
+              }
+              )
+            }
           </ol>
         </div>
 
-        <div className="p-4">
+        <div className={`${props.showRecents?"d-none ":""}p-4`}>
           <h4 className="fst-italic">Elsewhere</h4>
           <ol className="list-unstyled">
             <li><a href="#">GitHub</a></li>

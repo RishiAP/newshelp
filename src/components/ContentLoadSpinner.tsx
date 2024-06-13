@@ -1,8 +1,8 @@
 import React from 'react'
 
-export default function ContentLoadSpinner(props:{loading:boolean,classProperties?:string}){
+export default function ContentLoadSpinner(props:{loading:boolean,classProperties?:string,style?:Object}){
   return (
-    <div className={`${props.loading? "d-flex":"d-none"} justify-content-center col-md-8 ${props.classProperties}`}>
+    <div className={`${props.loading? "d-flex":"d-none"} content-load-spinner justify-content-center col-md-8 ${props.classProperties}`} style={props.style}>
         <div className="spinner-grow text-primary" role="status">
   <span className="visually-hidden">Loading...</span>
 </div>
@@ -19,9 +19,6 @@ export default function ContentLoadSpinner(props:{loading:boolean,classPropertie
   <span className="visually-hidden">Loading...</span>
 </div>
 <div className="spinner-grow text-info" role="status">
-  <span className="visually-hidden">Loading...</span>
-</div>
-<div className="spinner-grow text-dark" role="status">
   <span className="visually-hidden">Loading...</span>
 </div>
     </div>
