@@ -2,7 +2,7 @@ import Footer from '@/components/Footer';
 import MainWindow from '@/components/MainWindow';
 import { News } from '@/models/NewsModel';
 import { connect } from '@/database/dbConfig';
-import './globals.css';
+import './newsSlug.module.css';
 import Navbar from '@/components/Navbar';
 connect();
 export default async function Page({params}:{params:{newsSlug:string}}) {
