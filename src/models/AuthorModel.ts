@@ -3,18 +3,52 @@ import mongoose, { Schema } from "mongoose";
 const AuthorSchema=new Schema({
     name:{
         type:String,
-        required:true
-    },
-    role:{
-        enum:['Editor','Journalist']
+        default:null
     },
     email:{
         type:String,
-        required:true
+        unique:true,
+        required:true,
     },
     password:{
         type:String,
-        required:true
+        default:null
+    },
+    profilePic:{
+        type:String,
+        default:null
+    },
+    bio:{
+        type:String,
+        default:null
+    },
+    socialLinks:{
+        type:Object,
+        default:null
+    },
+    createdOn:{
+        type:Date,
+        default:null
+    },
+    verified:{
+        type:Boolean,
+        default:false
+    },
+    verifyToken:{
+        type:String,
+        default:null
+    },
+    verificationExpiryTime:{
+        type:Date,
+        default:null
+    },
+    forgetPassToken:{
+        type:String,
+        default:null
+    },
+    forgetPassTokenExpiryTime:{
+        type:Date,
+        default:null
     }
 })
 

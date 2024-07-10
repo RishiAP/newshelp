@@ -96,7 +96,6 @@ const NewsCRUDComponent = (props: {
       <select
         className="form-select mb-3"
         id="categorySelect"
-        aria-label="Default select example"
         onInput={handleCategoryChange}
         value={getCategoryString(props.formData.category)}
         disabled={props.type === "delete"}
@@ -110,6 +109,28 @@ const NewsCRUDComponent = (props: {
             {category.value}
           </option>
         ))}
+      </select>
+      <label htmlFor="categorySelect" className="form-label">
+        Priority
+      </label>
+      <select
+        className="form-select mb-3"
+        id="prioritySelect"
+        onInput={
+          (e: React.ChangeEvent<HTMLSelectElement>) => {
+            props.setFormData({ ...props.formData, priority: e.currentTarget.value });
+          }
+        }
+        value={"priority"in props.formData? (props.formData.priority==null? "null":props.formData.priority):""}
+        disabled={props.type === "delete"}
+        required={props.type !== "delete"}
+      >
+        <option value="" disabled>
+          Select Priority
+        </option>
+        <option value="TopMost">Top Most News</option>
+        <option value="Headline">Headline</option>
+        <option value="null">None</option>
       </select>
       <div className={`mb-3${props.type === "delete"?" d-none":""}`}>
         <label htmlFor="formFile" className="form-label">
@@ -157,7 +178,7 @@ const NewsCRUDComponent = (props: {
             : props.type === "update"
             ? "btn-primary"
             : "btn-danger"
-        } btn-lg mt-3`}
+        } btn-lg mt-3 w-100`}
       >
         {props.type === "create"
           ? "Publish"

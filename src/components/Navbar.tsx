@@ -42,6 +42,7 @@ export default function Navbar (props:{currentActive:string,setLoading?:React.Di
 
   <div className="nav-scroller py-1 mb-3 border-bottom">
     <nav className="nav nav-underline justify-content-between">
+    <Link key="category_headlines" id="category_headlines" className={"nav-item nav-link link-body-emphasis "+(props.currentActive==="headlines"? "active":"")} href={`/`} onClick={loadLoader}>Headlines</Link>
       {
         categories.map((category:any) => {
           return <Link key={category._id} id={`category_${category.value}`} className={"nav-item nav-link link-body-emphasis "+(category.value===props.currentActive? "active":"")} href={`/categories/${category.value}`} onClick={loadLoader}>{category.value}</Link>;

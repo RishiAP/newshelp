@@ -92,7 +92,7 @@ const NewsItem = (props:{news?:{slug:string,title:string,content:Object,category
               readOnly={true}
               id="newsContent"
               modules={{ toolbar: false }}
-              className="w-full h-[70%] mt-10 bg-white"
+              className="w-full h-[70%] mt-10 bg-white public-newsItemContent"
             />
         
       </article>

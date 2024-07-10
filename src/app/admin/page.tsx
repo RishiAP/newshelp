@@ -14,6 +14,7 @@ export type NewsContent = {
   category: string | { _id: Object; value: string },
   content: Object,
   slug: string,
+  priority?: string|null
 };
 
 export default function Home() {
@@ -51,7 +52,7 @@ export default function Home() {
     e.currentTarget.querySelector('fieldset')?.setAttribute("disabled","true");
     toast.dismiss();
     const toastId=toast.loading("Publishing article... 🕒");
-    axios.post("/api/edit_news", formData).then((res) => {
+    axios.post("/api/edit_news", formData,{withCredentials:true}).then((res) => {
       if(res.status==200)
       toast.update(toastId,{render:<>Article published successfully! 🎉 <Link href={`/${res.data.slug}`} target="_blank" rel="noreferrer">View Article</Link></>,type:"success",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
     }).catch((err) => {
@@ -59,7 +60,10 @@ export default function Home() {
         toast.update(toastId,{render:"Article with same title already exists! ☹️",type:"warning",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
       }
       else{
+        if(err.response.status==500)
         toast.update(toastId,{render:"Oops! Something went wrong. 🤯",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+        else
+        toast.update(toastId,{render:err.response.data.error,type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
       }
       console.log(err);
     }).finally(function (){
@@ -95,7 +99,7 @@ export default function Home() {
           topimage: "",
           category: "",
           content: {},
-          slug: ""
+          slug: "",
         });
         showEditor && setShowEditor(false);
         const articleURL:any=document.getElementById("articleURL");

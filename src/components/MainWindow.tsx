@@ -5,7 +5,7 @@ import SideElement from './SideElement'
 import NewsCard from './NewsCard'
 import { Article } from '@/app/categories/[category]/page';
 import ContentLoadSpinner from './ContentLoadSpinner';
-const MainWindow = (props:{news?:{slug:string,title:string,metadesc:string,content:Object,topimage:string,category:string,date:string,views:number,dateUpdated?:string},articles:Article[],newsExist:boolean,loading:boolean,setLoading?:React.Dispatch<React.SetStateAction<boolean>>,alertMessage?:string,scrollLoading?:boolean,showRescents:boolean,isArchive?:boolean,archiveDate?:{month:string,year:string}}) => {
+const MainWindow = (props:{news?:{slug:string,title:string,metadesc:string,content:Object,topimage:string,category:string,date:string,views:number,dateUpdated?:string,author:{name:String,profilePic:string|null}},articles:Article[],newsExist:boolean,loading:boolean,setLoading?:React.Dispatch<React.SetStateAction<boolean>>,alertMessage?:string,scrollLoading?:boolean,showRescents:boolean,isArchive?:boolean,archiveDate?:{month:string,year:string},showSideElement?:boolean}) => {
   const [shouldDisplayArticles, setShouldDisplayArticles] = useState(true);
   const loadLoader=()=>{
     if(props.setLoading)
@@ -38,7 +38,9 @@ const MainWindow = (props:{news?:{slug:string,title:string,metadesc:string,conte
   {props.alertMessage}
 </div>
       </div>
-    <SideElement showRecents={props.showRescents} />
+      {
+        (!("showSideElement" in props) || props.showSideElement!=false) ? <SideElement showRecents={props.showRescents} author={props.news?.author} />:null
+      }
     </div>
   )
 }

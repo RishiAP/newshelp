@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import Author from "./AuthorModel";
 
 const CategorySchema=new Schema({
     value:{
@@ -44,21 +45,23 @@ const NewsSchema=new Schema(
             type:Date,
             default:null
         },
-        // priority:{
-        //     enum:['TopMost','Top',null]
-        // },
+        priority:{
+            type:String,
+            enum:['TopMost','Headline',null],
+            required:true
+        },
         views:{
             type:Number,
             default:0
         },
-        // author:{
-        //     type:String,
-        //     ref:'Author',
-        //     required:true
-        // }
+        author:{
+            type:Schema.Types.ObjectId,
+            ref:'Author',
+            required:true
+        }
     }
 )
 const News=mongoose.models.News || mongoose.model('News',NewsSchema);
 const Category=mongoose.models.Category || mongoose.model('Category',CategorySchema);
 
-export {News,Category};
+export {News,Category,Author};

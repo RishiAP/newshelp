@@ -4,8 +4,8 @@ import { timeAgo } from './NewsItem';
 import Link from 'next/link';
 import Image from 'next/image';
 import { handleShare } from './NewsItem';
-import { Article } from '@/app/categories/[category]/page';
-const NewsCard = (props:{article:Article,onClick?:any}) => {
+import { Article_without_content } from '@/app/page';
+const NewsCard = (props:{article:Article_without_content,onClick?:any}) => {
   return (
     <div className="card news-card mb-3" style={{height:"fit-content"}}>
   <div className="row g-0">
@@ -16,6 +16,9 @@ const NewsCard = (props:{article:Article,onClick?:any}) => {
     </div>
     <div className="col-md-8">
       <div className="card-body">
+        {
+          "category" in props.article && <strong className="d-inline-block mb-2 text-primary-emphasis">{(props.article.category instanceof String)? props.article.category:props.article.category.value}</strong>
+        }
         <h5 className="card-title fs-3">{props.article.title}</h5>
         <p className="card-text fs-6">{props.article.metadesc+"..."}</p>
         <div className="card-text d-flex justify-content-between align-items-center">

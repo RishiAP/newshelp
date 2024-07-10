@@ -2,12 +2,11 @@ import Footer from '@/components/Footer';
 import MainWindow from '@/components/MainWindow';
 import { News } from '@/models/NewsModel';
 import { connect } from '@/database/dbConfig';
-import './newsSlug.module.css';
 import Navbar from '@/components/Navbar';
 connect();
 export default async function Page({params}:{params:{newsSlug:string}}) {
   console.log(params)
-  const response=JSON.parse(JSON.stringify(await News.findOneAndUpdate({slug:params.newsSlug},{$inc:{views:1}},{new:true})));
+  const response=JSON.parse(JSON.stringify(await News.findOneAndUpdate({slug:params.newsSlug},{$inc:{views:1}}).populate("author",{_id:0,name:1,profilePic:1})));
   return (
     <>
     <Navbar currentActive='' />

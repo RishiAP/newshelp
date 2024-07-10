@@ -15,10 +15,10 @@ export async function GET(req: NextRequest) {
   console.log(dateTime);
   let articles=[];
   if(dateTime=="NONE"){
-    articles=await News.find({category:(category)._id},{content:0}).sort({date:-1}).limit(7);
+    articles=await News.find({category:(category)._id},{content:0,category:0}).sort({date:-1}).limit(7);
   }
   else{
-    articles=await News.find({category:(category)._id,date:{$lt:new Date(dateTime)}},{content:0}).sort({date:-1}).limit(7);
+    articles=await News.find({category:(category)._id,date:{$lt:new Date(dateTime)}},{content:0,category:0}).sort({date:-1}).limit(7);
   }
   try{
       return NextResponse.json(articles, { status: 200 });

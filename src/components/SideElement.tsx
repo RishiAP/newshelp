@@ -7,8 +7,11 @@ import React, { useEffect, useState } from 'react'
 import { timeAgo } from './NewsItem';
 import Image from 'next/image';
 
-const SideElement = (props:{setLoading?:React.Dispatch<React.SetStateAction<boolean>>,showRecents:boolean}) => {
+const SideElement = (props:{author?:{name:String,profilePic:string|null},setLoading?:React.Dispatch<React.SetStateAction<boolean>>,showRecents:boolean}) => {
   const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  useEffect(() => {
+    console.log(props.author);
+  },[]);
   function getYearsAndMonths(startDate:string, endDate = new Date()):{year:number,month:number}[] {
     const result = [];
     const start = new Date(startDate);
@@ -53,8 +56,14 @@ const SideElement = (props:{setLoading?:React.Dispatch<React.SetStateAction<bool
     <div className="col-md-4">
       <div className="position-sticky" style={{top:"2rem"}}>
         <div className={`${props.showRecents?"":"d-none "}p-4 mb-3 bg-body-tertiary rounded`}>
-          <h4 className="fst-italic">About</h4>
-          <p className="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+          <div className="d-flex flex-column align-items-center">
+            <div className="mb-5 d-flex justify-content-center slign-item-center">
+            {
+              props.author?.profilePic!=null?<img src={props.author?.profilePic} alt="" className="rounded-circle" style={{width:"100px",height:"100px"}} />:<i className="bi bi-person-circle" style={{fontSize:"7rem"}}></i>
+            }
+            </div>
+          <p className='fs-5'>{props.author?.name}</p>
+          </div>
         </div>
 
         <div className={props.showRecents?"":"d-none"}>
