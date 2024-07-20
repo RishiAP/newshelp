@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import Image from 'next/image';
 import Link from 'next/link';
+import { Article } from '@/app/categories/[category]/page';
 
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 function formatDate(date: Date): string {
@@ -65,16 +66,14 @@ export const handleShare=async ({title,metadesc,slug}:{title:string,metadesc:str
     console.log(err);
   }
 }
-const NewsItem = (props:{news?:{slug:string,title:string,content:Object,category:string,date:string,topimage:string,metadesc:string,views:number,dateUpdated?:string},newsExist:boolean}) => {
-  console.log(props.news);
-  
+const NewsItem = (props:{news?:Article,newsExist:boolean}) => {
   
   return (
     <div>
       <article className="blog-post position-relative">
         <h2 className="display-5 mb-1">{props.news?.title}</h2>
         <div className="blog-post-meta m-0 d-flex justify-content-between align-items-center flex-wrap">
-          <span>Published on {props.news? formatDate(new Date(props.news.date)):""}</span>
+          <span>Published on {props.news? formatDate(new Date(props.news.createdOn)):""}</span>
           <span>{props.news && props.news.dateUpdated? `Last updated on ${formatDate(new Date(props.news.dateUpdated))}`:""}</span>
         <div className='d-flex justify-content-between align-items-center gap-3'>
           <Link href={`https://wa.me/?text=${process.env.NEXT_PUBLIC_DOMAIN}/${props.news?.slug}`} target='_blank' style={{color:"#00E676"}}><i className="bi bi-whatsapp fs-4"></i></Link>

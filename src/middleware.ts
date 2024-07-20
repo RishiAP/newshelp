@@ -26,5 +26,9 @@ export const config = {
   matcher: [
         '/admin',
         '/api/edit-news',
+        '/api/author_profile',
+        '/api/get_author_articles',
+        '/api/create-category',
+        '/api/create-author',
     ],
 };

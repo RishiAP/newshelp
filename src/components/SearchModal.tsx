@@ -51,7 +51,7 @@ mainWin?.querySelector('.content-load-spinner')?.classList.add('d-flex');
     if(shouldScrollFetch && element.scrollHeight-element.scrollTop-element.clientHeight<30){
       setShouldScrollFetch(false);
       setLoadingBottom(true);
-      axios.get(`/api/search_articles?query=${searchTerm}&datetime=${encodeURIComponent(searchArticles[searchArticles.length-1]?.date || "NONE")}`).then((res)=>{
+      axios.get(`/api/search_articles?query=${searchTerm}&datetime=${encodeURIComponent(searchArticles[searchArticles.length-1]?.createdOn || "NONE")}`).then((res)=>{
         setSearchArticles([...searchArticles,...res.data]);
         document.getElementById("searchedArticles")?.classList.remove("d-none");
         if(res.data.length<4){

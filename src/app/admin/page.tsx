@@ -3,10 +3,13 @@ import React, { useState, useEffect, ReactElement, FormEvent } from "react";
 import AdminNavbar from "@/components/AdminNavbar";
 import NewsCRUDComponent from "@/components/NewsCRUDComponent";
 import axios, { AxiosPromise } from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { Id, ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import ContentLoadSpinner from "@/components/ContentLoadSpinner";
 import Link from "next/link";
+import AdminDashboard from "@/components/AdminDashboard";
+import ThemeChanger from "@/components/ThemeChanger";
+import Footer from "@/components/Footer";
 
 export type NewsContent = {
   title: string,
@@ -24,8 +27,9 @@ export default function Home() {
     category: "",
     content: {},
     slug: "",
+    priority:null
   });
-  const [actionType, setActionType] = useState("create");
+  const [actionType, setActionType] = useState("dashboard");
   const [newsSlug, setNewsSlug] = useState("");
   const [showEditor, setShowEditor] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,6 +41,7 @@ export default function Home() {
       category: "",
       content: {},
       slug: "",
+      priority:null
     });
     if (actionType === "create") {
       setShowEditor(true);
@@ -46,6 +51,22 @@ export default function Home() {
     }
     toast.dismiss();
   }, [actionType]);
+
+  function handleCommonError(err:any,toastId:Id){
+    if(err.response.status==500)
+      toast.update(toastId,{render:"Oops! Something went wrong. 🤯",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+      else if(err.response.status==401){
+        toast.update(toastId,{render:err.response.data.error,type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+        axios.post("/api/logout").then((res)=>{
+          toast.update(toastId,{render:"You have been logged out!",type:"info",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+          setTimeout(()=>{window.location.href="/admin-login"},2000);
+        }).catch((err)=>{
+          console.log(err);
+        });
+      }
+      else
+      toast.update(toastId,{render:err.response.data.error,type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+  }
 
   const handlePublish = (e: FormEvent) => {
     e.preventDefault();
@@ -60,10 +81,7 @@ export default function Home() {
         toast.update(toastId,{render:"Article with same title already exists! ☹️",type:"warning",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
       }
       else{
-        if(err.response.status==500)
-        toast.update(toastId,{render:"Oops! Something went wrong. 🤯",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
-        else
-        toast.update(toastId,{render:err.response.data.error,type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+        handleCommonError(err,toastId);
       }
       console.log(err);
     }).finally(function (){
@@ -80,8 +98,7 @@ export default function Home() {
       if(res.status==200)
         toast.update(toastId,{render:<>Article updated successfully! 🎉 <Link href={`/${res.data.slug}`} target="_blank" rel="noreferrer">View Article</Link></>,type:"success",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
     }).catch((err) => {
-      toast.update(toastId,{render:"Oops! Something went wrong. 🤯",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
-      console.log(err);
+      handleCommonError(err,toastId);
       }).finally(function (){
         document.getElementById("articleControlForm")?.querySelector('fieldset')?.removeAttribute("disabled");
     });
@@ -90,23 +107,27 @@ export default function Home() {
   const handleDelete = (e: any) => {
     e.preventDefault();
     toast.dismiss();
-    const deletePromise=axios.delete(`/api/edit_news?slug=${newsSlug}`);
-    asyncToast(deletePromise,"Deleting article... 🕒","Article deleted successfully! 🎉","Oops! Something went wrong. 🤯");
-    deletePromise.then((res) => {
+    const toastId=toast.loading("Deleting article... 🕒");
+    axios.delete(`/api/edit_news?slug=${newsSlug}`).then((res) => {
       if(res.data.slug===formData.slug){
+        toast.update(toastId,{render:"Article deleted successfully! 🎉",type:"success",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
         setFormData({
           title: "",
           topimage: "",
           category: "",
           content: {},
           slug: "",
+          priority:null
         });
         showEditor && setShowEditor(false);
         const articleURL:any=document.getElementById("articleURL");
         articleURL.value="";
       }
+      else{
+        toast.update(toastId,{render:"Article not found! ☹️",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+      }
     }).catch((err) => {
-      console.log(err);
+      handleCommonError(err,toastId);
     });
 
   };
@@ -180,16 +201,21 @@ export default function Home() {
   return (
     <>
       <AdminNavbar actionType={actionType} setActionType={setActionType} />
-      <main className="h-100">
+      <ThemeChanger/>
+      <main className="">
         <div className="container h-100">
-          <h1>
-            {actionType === "create"
-              ? "Create a News Post"
-              : actionType === "update"
-              ? "Update an Article"
-              : "Delete an Article"}
-          </h1>
-          {actionType != "create" && (
+          {actionType!=="dashboard"? <h1>
+            {
+              actionType === "create"
+                ? "Create News"
+                : actionType === "update"
+                ? "Update News"
+                : "Delete News"
+            }
+          </h1>:null
+          }
+          {actionType === "dashboard" && <AdminDashboard />}
+          {actionType != "create" && actionType!="dashboard" && (
             <div>
               <label htmlFor="newsTitle" className="form-label">
                 News URL
@@ -222,6 +248,7 @@ export default function Home() {
         </div>
         <ToastContainer theme="dark" draggablePercent={60} position="top-center" draggable />
       </main>
+      <Footer/>
     </>
   )
 }

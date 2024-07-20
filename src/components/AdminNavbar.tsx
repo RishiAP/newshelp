@@ -1,10 +1,13 @@
 import React from 'react'
+import { LogoutModal } from './LogoutModal';
 
 const AdminNavbar = (props:{setActionType:React.Dispatch<React.SetStateAction<string>>,actionType:string}) => {
   const setPage=(e:React.MouseEvent<HTMLButtonElement>)=>{
     props.setActionType(e.currentTarget.getAttribute("data-active") || "create");
   }
   return (
+    <>
+    <LogoutModal/>
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
   <div className="container-fluid">
     <a className="navbar-brand" href="#">News</a>
@@ -13,6 +16,9 @@ const AdminNavbar = (props:{setActionType:React.Dispatch<React.SetStateAction<st
     </button>
     <div className="collapse navbar-collapse" id="navbarSupportedContent">
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+        <li className="nav-item">
+          <button type="button" className={`nav-link${props.actionType=="dashboard"? " active":""}`} aria-current="page" data-active="dashboard" onClick={setPage} >Dashboard</button>
+        </li>
         <li className="nav-item">
           <button type="button" className={`nav-link${props.actionType=="create"? " active":""}`} aria-current="page" data-active="create" onClick={setPage} >Post</button>
         </li>
@@ -23,9 +29,11 @@ const AdminNavbar = (props:{setActionType:React.Dispatch<React.SetStateAction<st
           <button type="button" className={`nav-link${props.actionType=="delete"? " active":""}`} aria-current="page" data-active="delete" onClick={setPage} >Delete</button>
         </li>
       </ul>
+        <button className="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
     </div>
   </div>
 </nav>
+</>
   )
 }
 

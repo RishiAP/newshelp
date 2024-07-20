@@ -14,6 +14,10 @@ const AuthorSchema=new Schema({
         type:String,
         default:null
     },
+    sessionToken:{
+        type:String,
+        default:null
+    },
     profilePic:{
         type:String,
         default:null
@@ -31,6 +35,10 @@ const AuthorSchema=new Schema({
         default:null
     },
     verified:{
+        type:Boolean,
+        default:false
+    },
+    isSuperAdmin:{
         type:Boolean,
         default:false
     },

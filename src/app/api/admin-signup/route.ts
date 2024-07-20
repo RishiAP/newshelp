@@ -3,6 +3,7 @@ import sendEmail from "@/helpers/mailer";
 import Author from "@/models/AuthorModel";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import EmailTemplate from "@/components/EmailTemplate";
 connect();
 export async function POST(req: NextRequest) {
     try {
@@ -17,8 +18,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({message:"Email not found"}, { status: 404 });
         }
         author =await Author.findOneAndUpdate({email:data.email},{verifyToken:token,verificationExpiryTime:Date.now()+1200000});
-        const email_sent=await sendEmail('"Debjyoti Mondal 👻" <myqdiscuss@outlook.com>',data.email,"Create your News account",`Your email has been registered with us. Please click on the link to continue http://${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}`,`<div>Your email has been registered with us. Please click on the link below to continue<a href="${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}">${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}</a></div>`);
-        console.log(email_sent);
+        const emailHtml=EmailTemplate({link:`${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}`,message:"Your email has been registered with us. Please click on the button below to continue",buttonText:"Create account"});
+        const email_sent=await sendEmail('"Debjyoti Mondal 👻" <myqdiscuss@outlook.com>',data.email,"Create your News account",`Your email has been registered with us. Please click on the link to continue http://${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}`,emailHtml);
         return NextResponse.json({message:"email sent"}, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });

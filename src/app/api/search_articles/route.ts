@@ -9,10 +9,10 @@ export async function GET(req: NextRequest) {
         const dateTime:string=req.nextUrl.searchParams.get("datetime") || "NONE";
         let articles;
         if(dateTime=="NONE"){
-            articles=await News.find({$or:[{title:{$regex:`${query}*`,$options:'i'}},{metadata:{$regex:`${query}*`,$options:'i'}},{"content.ops":{$elemMatch:{insert:{$regex:`${query}*`,$options:"i"}}}}]},{content:0}).sort({date:-1}).limit(4).populate("category");
+            articles=await News.find({$or:[{title:{$regex:`${query}*`,$options:'i'}},{metadata:{$regex:`${query}*`,$options:'i'}},{"content.ops":{$elemMatch:{insert:{$regex:`${query}*`,$options:"i"}}}}]},{content:0}).sort({createdOn:-1}).limit(4).populate("category");
         }
         else{
-            articles=await News.find({$or:[{title:{$regex:`${query}*`,$options:'i'}},{metadata:{$regex:`${query}*`,$options:'i'}},{"content.ops":{$elemMatch:{insert:{$regex:`${query}*`,$options:"i"}}}}],date:{$lt:new Date(dateTime)}},{content:0}).sort({date:-1}).limit(4).populate("category");
+            articles=await News.find({$or:[{title:{$regex:`${query}*`,$options:'i'}},{metadata:{$regex:`${query}*`,$options:'i'}},{"content.ops":{$elemMatch:{insert:{$regex:`${query}*`,$options:"i"}}}}],createdOn:{$lt:new Date(dateTime)}},{content:0}).sort({createdOn:-1}).limit(4).populate("category");
         }
         return NextResponse.json(articles, { status: 200 });
     }

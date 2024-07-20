@@ -118,7 +118,7 @@ const NewsCRUDComponent = (props: {
         id="prioritySelect"
         onInput={
           (e: React.ChangeEvent<HTMLSelectElement>) => {
-            props.setFormData({ ...props.formData, priority: e.currentTarget.value });
+            props.setFormData({ ...props.formData, priority: e.currentTarget.value=="null"?null:e.currentTarget.value });
           }
         }
         value={"priority"in props.formData? (props.formData.priority==null? "null":props.formData.priority):""}

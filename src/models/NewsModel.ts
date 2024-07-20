@@ -37,7 +37,7 @@ const NewsSchema=new Schema(
             ref:'Category',
             required:true
         },
-        date:{
+        createdOn:{
             type:Date,
             default:Date.now
         },
@@ -48,7 +48,8 @@ const NewsSchema=new Schema(
         priority:{
             type:String,
             enum:['TopMost','Headline',null],
-            required:true
+            nullable:true,
+            default:null
         },
         views:{
             type:Number,

@@ -1,5 +1,5 @@
 "use client";
-import { Article } from '@/app/categories/[category]/page';
+import { Article_without_content } from '@/app/page';
 import Footer from '@/components/Footer';
 import MainWindow from '@/components/MainWindow';
 import Navbar from '@/components/Navbar';
@@ -7,7 +7,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 export default function Archives({params}:{params:{year:string,month:string}}){
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<Article_without_content[]|null>(null);
   const [alertMessage, setAlertMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [scrollLoading, setScrollLoading] = useState(false);
@@ -16,6 +16,7 @@ export default function Archives({params}:{params:{year:string,month:string}}){
     localStorage.setItem('shouldFetch',"true");
     axios.get(`/api/get_archives?year=${params.year}&month=${params.month}`).then((res) => {
       setArticles(res.data);
+      console.log(res.data);
       setLoading(false);
       }
     );
@@ -23,7 +24,7 @@ export default function Archives({params}:{params:{year:string,month:string}}){
   useEffect(()=>{
     const mainWindow=document.getElementById("mainWindowDiv");
     window.onscroll=()=>{
-      if(articles.length>6 && window.location.href.split("/")[3]=="archives"){
+      if(articles && articles.length>6 && window.location.href.split("/")[3]=="archives"){
         if((mainWindow?.scrollHeight || 0)+(mainWindow?.getBoundingClientRect().y || 0)<window.innerHeight+300){
           if(localStorage.getItem('shouldFetch')=="true"){
             setScrollLoading(true);

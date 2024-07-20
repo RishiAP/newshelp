@@ -3,6 +3,7 @@ import sendEmail from "@/helpers/mailer";
 import Author from "@/models/AuthorModel";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import EmailTemplate from "@/components/EmailTemplate";
 connect();
 export async function POST(req: NextRequest) {
     try {
@@ -12,8 +13,8 @@ export async function POST(req: NextRequest) {
         if(author==null){
             return NextResponse.json({message:"Email not found"}, { status: 404 });
         }
-        const email_sent=await sendEmail('"Debjyoti Mondal 👻" <myqdiscuss@outlook.com>',data.email,"Reset your News Password",`Please use the link to reset your password : http://${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}`,`<div>Please click on the link below to reset your password : <a href="${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}">${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}</a></div>`);
-        console.log(email_sent);
+        const emailHtml=EmailTemplate({link:`${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}`,message:"Please click on the link below to reset your password",buttonText:"Reset password"});
+        const email_sent=await sendEmail('"Debjyoti Mondal 👻" <myqdiscuss@outlook.com>',data.email,"Reset your News Password",`Please use the link to reset your password : http://${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}`,emailHtml);
         return NextResponse.json({message:"email sent"}, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });

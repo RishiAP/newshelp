@@ -10,13 +10,12 @@ import { parse } from 'cookie';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import Author from '@/models/AuthorModel';
 connect();
-async function getAuthorFromHeader(req: NextRequest): Promise<String | null> {
+export async function getAuthorFromHeader(req: NextRequest): Promise<JwtPayload | null> {
     const cookies = parse(req.headers.get('cookie') || '');
     if (cookies.jwtAccessToken && cookies.jwtAccessToken.length > 0) {
         try {
             const secret = process.env.JWT_SECRET || '';
-            const decoded = jwt.verify(cookies.jwtAccessToken, secret) as JwtPayload;
-            return decoded.email as String;
+            return jwt.verify(cookies.jwtAccessToken, secret) as JwtPayload;
         } catch (err) {
             console.error('JWT verification failed:', err);
         }
@@ -126,7 +125,6 @@ async function removeUnusedImages(data: { content: { ops: any[] }, topimage: str
 
     // Perform the aggregation
     const preImages = await News.aggregate(pipeline).exec();
-    console.log(preImages);
     if (preImages.length == 0)
         return;
     const currentImages = data.content.ops.filter((op: any) => op.hasOwnProperty('insert') && op.insert.hasOwnProperty('image')).map((op: any) => op.insert.image);
@@ -144,14 +142,19 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     try {
+        data.author = await Author.findById(author._id);
+        if(data.author==null || data.author.sessionToken!=author.sessionToken){
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
         const endOfDay = new Date();
         endOfDay.setHours(23, 59, 59, 999);
-        if (data.priority == "TopMost" && await News.findOne({ priority: 'TopMost', date: { $gte: startOfDay, $lte: endOfDay } })) {
+        if (data.priority == "TopMost" && await News.findOne({ priority: 'TopMost', createdOn: { $gte: startOfDay, $lte: endOfDay } })) {
             return NextResponse.json({ error: "Topmost article already exists for today" }, { status: 422 });
         }
-        data.author = await Author.findOne({ email: author });
+        if(data.priority=="null")
+            data.priority=null;
         data.slug = slugify(await translateForSlug(data.title));
         data.category = (await Category.findOne({ value: data.category }))._id;
         await addImagesInContent(data);
@@ -161,13 +164,34 @@ export async function POST(req: NextRequest) {
             await setTopImage(data);
             const newNews = new News(data);
             const savedNews = await newNews.save();
-            return NextResponse.json(data, { status: 200 });
+            return NextResponse.json(savedNews, { status: 200 });
         }
         else {
             return NextResponse.json({ error: "Invalid Top Image" }, { status: 500 });
         }
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });
+    }
+}
+async function checkPermission(slug:string,req:NextRequest):Promise<true|string|undefined>{
+    let tempAuthor=await getAuthorFromHeader(req);
+    if (tempAuthor == null) {
+        return "Unauthorized";
+    }
+    else{
+        let author=await Author.findById(tempAuthor._id,{_id:1,isSuperAdmin:1,sessionToken:1});
+        if(author==null || author.sessionToken!=tempAuthor.sessionToken){
+            return "Unauthorized";
+        }
+        if(!author.isSuperAdmin){
+            const actualAuthor=(await News.findOne({slug:slug},{author:1}).populate("author")).author._id as string;
+            if(actualAuthor!=author._id)
+            return "Permission Denied! You are not the author of this article";
+            else
+            return true;
+        }
+        else
+        return true;
     }
 }
 export async function GET(req: NextRequest) {
@@ -182,7 +206,23 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const slug: string = req.nextUrl.searchParams.get("slug") || "";
+        const permission=await checkPermission(slug,req);
+        if(permission!=true){
+            if(permission=="Unauthorized")
+            return NextResponse.json({ error: permission }, { status: 401 });
+            else
+            return NextResponse.json({ error: permission }, { status: 403 });
+        }
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
         const data = await req.json();
+        if (data.priority == "TopMost" && await News.findOne({ priority: 'TopMost', createdOn: { $gte: startOfDay, $lte: endOfDay } })) {
+            return NextResponse.json({ error: "Topmost article already exists for today" }, { status: 422 });
+        }
+        if(data.priority=="null")
+            data.priority=null;
         data.slug = slugify(await translateForSlug(data.title));
         data.category = (await Category.findOne({ value: data.category }))._id;
         data.dateUpdated = new Date();
@@ -197,7 +237,6 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json(article, { status: 200 });
     }
     catch (error) {
-        console.log(error);
         return NextResponse.json(error, { status: 500 });
     }
 }
@@ -205,6 +244,13 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const slug: string = req.nextUrl.searchParams.get("slug") || "";
+        const permission=await checkPermission(slug,req);
+        if(permission!=true){
+            if(permission=="Unauthorized")
+            return NextResponse.json({ error: permission }, { status: 401 });
+            else
+            return NextResponse.json({ error: permission }, { status: 403 });
+        }
         const article = await News.findOneAndDelete({ slug: slug });
         await removeImage(article.topimage);
         article.content.ops.filter((op: any) => op.hasOwnProperty('insert') && op.insert.hasOwnProperty('image')).map((op: any) => op.insert.image).forEach(async (image: string) => {
