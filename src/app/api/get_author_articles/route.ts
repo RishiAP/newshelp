@@ -1,6 +1,6 @@
 import { connect } from "@/database/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthorFromHeader } from "../edit_news/route";
+import { getAuthorFromHeader } from '@/helpers/common_func';
 import { Author, News } from "@/models/NewsModel";
 connect();
 function addDays(date:Date|string, days:number):Date {

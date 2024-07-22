@@ -9,19 +9,9 @@ import fs from "fs";
 import { parse } from 'cookie';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import Author from '@/models/AuthorModel';
+import { getAuthorFromHeader } from '@/helpers/common_func';
 connect();
-export async function getAuthorFromHeader(req: NextRequest): Promise<JwtPayload | null> {
-    const cookies = parse(req.headers.get('cookie') || '');
-    if (cookies.jwtAccessToken && cookies.jwtAccessToken.length > 0) {
-        try {
-            const secret = process.env.JWT_SECRET || '';
-            return jwt.verify(cookies.jwtAccessToken, secret) as JwtPayload;
-        } catch (err) {
-            console.error('JWT verification failed:', err);
-        }
-    }
-    return null;
-}
+
 function slugify(str: string) {
     return String(str)
         .normalize('NFKD') // split accented characters into their base characters and diacritical marks

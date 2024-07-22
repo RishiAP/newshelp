@@ -1,7 +1,7 @@
 import { connect } from "@/database/dbConfig";
 import Author from "@/models/AuthorModel";
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthorFromHeader } from "../edit_news/route";
+import { getAuthorFromHeader } from '@/helpers/common_func';
 connect();
 export async function POST(req: NextRequest) {
     try {
