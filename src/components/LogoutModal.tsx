@@ -1,7 +1,7 @@
 "use client";
 import axios from 'axios';
 import React from 'react'
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export const LogoutModal = () => {
     function logout(){
@@ -32,7 +32,6 @@ export const LogoutModal = () => {
     </div>
   </div>
 </div>
-<ToastContainer theme="dark" draggablePercent={60} position="top-center" draggable />
     </>
   )
 }

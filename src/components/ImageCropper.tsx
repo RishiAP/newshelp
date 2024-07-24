@@ -6,13 +6,17 @@ import 'react-image-crop/dist/ReactCrop.css'
 import { Admin } from './AdminDashboard';
 
 export const ImageCropper = (props:{src:null|string,crop:Crop,croppedImageUrl:null|Blob,onCropComplete:(crop: PixelCrop, percentageCrop: PercentCrop) => void,setCrop:React.Dispatch<React.SetStateAction<Crop>>,onImageLoaded:ReactEventHandler<HTMLImageElement>,setAuthor:React.Dispatch<React.SetStateAction<Admin>>}) => {
-    function uploadAdminImage(){
-        if(props.croppedImageUrl==null){
-            return;
-        }
-        const formData=new FormData();
-        formData.append("image",props.croppedImageUrl,"profilePic.jpg");
-        axios.put('/api/author_profile', formData)
+
+    async function blobToBase64(blob:Blob):Promise<string>{
+        return new Promise((resolve,reject)=>{
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = error => reject(error);
+            reader.readAsDataURL(blob);
+        });
+    }
+    async function uploadAdminImage(){
+        axios.put('/api/author_profile', {base64Image:await blobToBase64(props.croppedImageUrl as Blob)})
         .then(res => {
           props.setAuthor(res.data);
           (document.getElementById("profileImageSettingModal")?.querySelector(".btn-close") as HTMLButtonElement)?.click();

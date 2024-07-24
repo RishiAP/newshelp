@@ -94,7 +94,6 @@ function handleCreateAuthor(e:React.FormEvent<HTMLFormElement>){
     </div>
   </div>
 </div>
-<ToastContainer theme="dark" draggablePercent={60} position="top-center" draggable />
     </>
   )
 }

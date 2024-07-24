@@ -2,14 +2,9 @@ import { connect } from '@/database/dbConfig';
 import { NextRequest, NextResponse } from "next/server";
 import { News, Category } from "@/models/NewsModel";
 import axios from 'axios';
-import { nanoid } from '@reduxjs/toolkit';
-import path from "path";
-import { writeFile } from "fs/promises";
-import fs from "fs";
-import { parse } from 'cookie';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import Author from '@/models/AuthorModel';
 import { getAuthorFromHeader } from '@/helpers/common_func';
+import { deleteImageFormURL, uploadImage } from '@/helpers/sanity';
 connect();
 
 function slugify(str: string) {
@@ -21,17 +16,6 @@ function slugify(str: string) {
         .replace(/[^a-z0-9 -]/g, '') // remove non-alphanumeric characters
         .replace(/\s+/g, '-') // replace spaces with hyphens
         .replace(/-+/g, '-'); // remove consecutive hyphens
-}
-function dataURLtoFile(dataurl: any, filename: string) {
-    var arr = dataurl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[arr.length - 1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-    while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
 }
 async function translateForSlug(title: string) {
     const options = {
@@ -52,18 +36,10 @@ async function translateForSlug(title: string) {
     return (await axios.request(options)).data.data.translations[0].translatedText;
 }
 async function addImagesInContent(data: { content: { ops: any[] } }) {
-    let file, buffer, filename, i, ext;
+    let i;
     for (i = 0; i < data.content.ops.length; i++) {
         if (data.content.ops[i].hasOwnProperty('insert') && data.content.ops[i].insert.hasOwnProperty('image') && data.content.ops[i].insert.image.startsWith('data:image')) {
-            ext = data.content.ops[i].insert.image.split(';')[0].split('/')[1];
-            filename = nanoid() + "." + (ext == "svg+xml" ? "svg" : ext);
-            file = dataURLtoFile(data.content.ops[i].insert.image, filename);
-            buffer = Buffer.from(await file.arrayBuffer());
-            await writeFile(
-                path.join(process.cwd(), "public/uploads/images/" + filename),
-                buffer
-            );
-            data.content.ops[i].insert.image = `/uploads/images/${filename}`;
+            data.content.ops[i].insert.image = await uploadImage(data.content.ops[i].insert.image);
         }
     }
 }
@@ -79,16 +55,7 @@ async function generateMetaDesc(data: { metadesc: string, content: { ops: any[] 
     }
 }
 async function setTopImage(data: { topimage: string }) {
-    let file, buffer, filename, i, ext;
-    ext = data.topimage.split(';')[0].split('/')[1];
-    filename = nanoid() + "." + (ext == "svg+xml" ? "svg" : ext);
-    file = dataURLtoFile(data.topimage, filename);
-    buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(
-        path.join(process.cwd(), "public/uploads/images/" + filename),
-        buffer
-    );
-    data.topimage = `/uploads/images/${filename}`;
+    data.topimage = await uploadImage(data.topimage);
 }
 function setDifference(setA: string[], setB: string[]): Set<string> {
     let difference = new Set(setA);
@@ -97,13 +64,9 @@ function setDifference(setA: string[], setB: string[]): Set<string> {
     }
     return difference;
 }
-async function removeImage(image: string) {
-    const filePath = path.join(process.cwd(), "public/uploads/images/" + image.split("/").pop());
-    fs.unlinkSync(filePath);
-}
 async function removeUnusedImages(data: { content: { ops: any[] }, topimage: string }, slug: string) {
     if (data.topimage.startsWith('data:image')) {
-        await removeImage((await News.findOne({ slug: slug }, { topimage: 1 })).topimage);
+        await deleteImageFormURL((await News.findOne({ slug: slug }, { topimage: 1 })).topimage);
     }
     let i = 0;
     const pipeline = [
@@ -120,8 +83,8 @@ async function removeUnusedImages(data: { content: { ops: any[] }, topimage: str
     const currentImages = data.content.ops.filter((op: any) => op.hasOwnProperty('insert') && op.insert.hasOwnProperty('image')).map((op: any) => op.insert.image);
     const imagesToBeRemoved: Set<string> = setDifference(preImages[0].images, currentImages);
     imagesToBeRemoved.forEach(async (image: string) => {
-        if (image.startsWith("/upload/images/")) {
-            await removeImage(image);
+        if (image.startsWith("https://cdn.sanity.io")) {
+            await deleteImageFormURL(image);
         }
     });
 }
@@ -208,7 +171,7 @@ export async function PUT(req: NextRequest) {
         const endOfDay = new Date();
         endOfDay.setHours(23, 59, 59, 999);
         const data = await req.json();
-        if (data.priority == "TopMost" && await News.findOne({ priority: 'TopMost', createdOn: { $gte: startOfDay, $lte: endOfDay } })) {
+        if (data.priority == "TopMost" && (await News.findOne({ priority: 'TopMost', createdOn: { $gte: startOfDay, $lte: endOfDay } })).slug!=slug) {
             return NextResponse.json({ error: "Topmost article already exists for today" }, { status: 422 });
         }
         if(data.priority=="null")
@@ -242,10 +205,10 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: permission }, { status: 403 });
         }
         const article = await News.findOneAndDelete({ slug: slug });
-        await removeImage(article.topimage);
+        await deleteImageFormURL(article.topimage);
         article.content.ops.filter((op: any) => op.hasOwnProperty('insert') && op.insert.hasOwnProperty('image')).map((op: any) => op.insert.image).forEach(async (image: string) => {
-            if (image.startsWith("/upload/images/")) {
-                await removeImage(image);
+            if (image.startsWith("https://cdn.sanity.io")) {
+                await deleteImageFormURL(image);
             }
         });
         return NextResponse.json(article, { status: 200 });

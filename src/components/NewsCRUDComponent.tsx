@@ -147,7 +147,7 @@ const NewsCRUDComponent = (props: {
       </div>
       <div className="d-flex justify-content-center w-100">
         {props.formData.topimage && (
-          <Image
+          <img
             src={props.formData.topimage}
             width={0}
             height={0}

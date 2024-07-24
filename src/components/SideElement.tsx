@@ -90,7 +90,7 @@ const SideElement = (props:{author?:Author_Details,setLoading?:React.Dispatch<Re
               sideArticles.map((article:Article_without_content) => {
                 return <li key={article.slug}>
                 <Link className="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href={`/${article.slug}`} onClick={loadLoader} >
-                <Image src={article.topimage} alt={article.title} width={100} height={100} style={{height:"auto",width:"100%"}} className="rounded" />
+                <img src={article.topimage} alt={article.title} style={{height:"auto",width:"100%"}} className="rounded" />
                   <div className="col-lg-8">
                     <h6 className="mb-0">{article.title}</h6>
                     <small className="text-body-secondary">{timeAgo(article.createdOn)}</small>

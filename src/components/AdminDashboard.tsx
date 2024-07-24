@@ -51,11 +51,11 @@ export default function AdminDashboard(){
     (document.getElementById("twitter_usn") as HTMLInputElement).value=author.socialLinks?.twitter?author.socialLinks.twitter:"";
     (document.getElementById("facebook_usn") as HTMLInputElement).value=author.socialLinks?.facebook?author.socialLinks.facebook:"";
   }
-  function handleCommonError(err:any,toastId:Id){
+  function handleCommonError(err:any){
     if(err.response.status==500)
-      toast.update(toastId,{render:"Oops! Something went wrong. 🤯",type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+      toast.error("Internal server error",{autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
       else if(err.response.status==401){
-        toast.update(toastId,{render:err.response.data.error,type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+        const toastId=toast.loading("You are not authorized to view this page. Logging out...",{autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
         axios.post("/api/logout").then((res)=>{
           toast.update(toastId,{render:"You have been logged out!",type:"info",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
           setTimeout(()=>{window.location.href="/admin-login"},2000);
@@ -64,7 +64,7 @@ export default function AdminDashboard(){
         });
       }
       else
-      toast.update(toastId,{render:err.response.data.error,type:"error",isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
+        toast.error(err.response.data.error,{isLoading:false,autoClose:false,closeButton:true,draggable:true,draggablePercent:60});
   }
   useEffect(()=>{
     if(isMobile()){
@@ -75,13 +75,12 @@ export default function AdminDashboard(){
     axios.get("/api/category").then((res)=>{
       setCategories(res.data);
     });
-    const toastId=toast.loading("Loading...",{autoClose:false,closeButton:false,draggable:false});
     axios.get("/api/author_profile").then((res) => {
       setAuthor(res.data);
       setPageLoading(false);
     }
     ).catch((err) => {
-      handleCommonError(err,toastId);
+      handleCommonError(err);
       console.log(err);
     });
   },[]);
@@ -89,7 +88,6 @@ export default function AdminDashboard(){
     setAlertMessage("");
     setFilterLoading(true);
     localStorage.setItem('shouldFetch',"true");
-    const toastId=toast.loading("Loading...",{autoClose:false,closeButton:false,draggable:false});
     axios.post("/api/get_author_articles",filter).then((res) => {
       setArticles(res.data);
       if(res.data.length==0){
@@ -97,7 +95,7 @@ export default function AdminDashboard(){
       }
     }
     ).catch((err) => {
-      handleCommonError(err,toastId);
+      handleCommonError(err);
       console.log(err);
     }).finally(()=>{
       setFilterLoading(false);

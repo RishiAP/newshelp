@@ -6,6 +6,7 @@ import { News } from "@/models/NewsModel";
 import path from "path";
 import { unlink, writeFile } from "fs/promises";
 import { nanoid } from "@reduxjs/toolkit";
+import { deleteImageFormURL, uploadImage } from "@/helpers/sanity";
 connect();
 export async function GET(req: NextRequest) {
     try {
@@ -84,24 +85,20 @@ export async function PUT(req: NextRequest) {
                 return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
             }
         }
-        const imageFile:File|null=(await req.formData()).get("image") as File;
-        if(imageFile==null){
+        const {base64Image}=await req.json();
+        if(base64Image==null){
             return NextResponse.json({error:"Image not found"},{status:400});
         }
-        const filename=nanoid()+".jpg";
-        const filePath = path.join(process.cwd(), 'public/uploads/images', filename);
-        // Read file buffer
-        const fileBuffer = await imageFile.arrayBuffer();
+        const imageURL=await uploadImage(base64Image);
         
-        // Write file to disk
-        await writeFile(filePath, Buffer.from(fileBuffer));
         const oldProfilePic:null|string=(await Author.findById(author._id,{profilePic:1})).profilePic;
         if(oldProfilePic!=null){
-            await unlink(path.join(process.cwd(), 'public', oldProfilePic));
+            await deleteImageFormURL(oldProfilePic);
         }
-        const updatedAuthor=await Author.findByIdAndUpdate(author._id,{profilePic:`/uploads/images/${filename}`},{projection:{_id:0,name:1,bio:1,socialLinks:1,email:1,profilePic:1,createdOn:1,isSuperAdmin:1},new:true});
+        const updatedAuthor=await Author.findByIdAndUpdate(author._id,{profilePic:imageURL},{projection:{_id:0,name:1,bio:1,socialLinks:1,email:1,profilePic:1,createdOn:1,isSuperAdmin:1},new:true});
         return NextResponse.json(updatedAuthor,{status:200});
     }catch(error){
+        console.log(error);
         return NextResponse.json({error},{status:500});
     }
 }
@@ -123,7 +120,7 @@ export async function DELETE(req: NextRequest) {
         }
         const oldProfilePic:null|string=(await Author.findById(author._id,{profilePic:1})).profilePic;
         if(oldProfilePic!=null){
-            await unlink(path.join(process.cwd(), 'public', oldProfilePic));
+            await deleteImageFormURL(oldProfilePic);
         }
         const updatedAuthor=await Author.findByIdAndUpdate(author._id,{profilePic:null},{projection:{_id:0,name:1,bio:1,socialLinks:1,email:1,profilePic:1,createdOn:1,isSuperAdmin:1},new:true});
         return NextResponse.json(updatedAuthor,{status:200});
