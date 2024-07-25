@@ -55,7 +55,7 @@ const NewsCRUDComponent = (props: {
   };
 
   const handleTopImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.files != null) {
+    if (e.currentTarget.files && e.currentTarget.files?.length>0) {
       const reader = new FileReader();
       reader.readAsDataURL(e.currentTarget.files[0]);
       reader.onload = function () {
@@ -67,6 +67,12 @@ const NewsCRUDComponent = (props: {
       reader.onerror = function (error) {
         console.log("Error: ", error);
       };
+    }
+    else if(e.currentTarget.files && e.currentTarget.files?.length==0){
+      props.setFormData({
+        ...props.formData,
+        topimage: "",
+      });
     }
   };
 
