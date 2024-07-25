@@ -1,6 +1,6 @@
 # News Website
 
-A modern and responsive news website built with Next.js, MongoDB, and Tailwind CSS.
+A modern and responsive news website built with Next.js, MongoDB, and Bootstrap.
 
 ## Table of Contents
 
@@ -10,7 +10,6 @@ A modern and responsive news website built with Next.js, MongoDB, and Tailwind C
 - [Installation](#installation)
 - [Usage](#usage)
 - [Folder Structure](#folder-structure)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Demo
@@ -54,7 +53,7 @@ Check out the live demo: [News Website](https://your-live-demo-link.com)
 
 3. Set up environment variables:
 
-    Create a `.env.local` file in the root directory and add your MongoDB connection string and other necessary environment variables:
+    Create a `.env.local` or `.env` file in the root directory and add your MongoDB connection string and other necessary environment variables:
 
     ```env
     MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
@@ -82,7 +81,121 @@ Check out the live demo: [News Website](https://your-live-demo-link.com)
 - **Home Page**: Displays the latest news articles.
 - **Search**: Use the search bar to find specific articles.
 - **Article Page**: Click on an article to view the full content.
-- **Admin Panel**: (If applicable) Log in to manage articles and content.
+- **Archive Page**: Click on archive links to view archives of a months in that year
+- **Admin Panel**: (*Only for Authors or Admins*) Log in to manage articles and content.
 
 ## Folder Structure
+<details>
+<summary>Click to view folder structure</summary>
 
+```
+.
+├── public
+├── src
+│   ├── app
+│   │   ├── [newsSlug]
+│   │   │   └── page.tsx
+│   │   ├── admin
+│   │   │   └── page.tsx
+│   │   ├── admin-login
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── admin-signup
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── api
+│   │   │   ├── admin-login
+│   │   │   │   └── route.ts
+│   │   │   ├── admin-signup
+│   │   │   │   └── route.ts
+│   │   │   ├── admin-signup-verify
+│   │   │   │   └── route.ts
+│   │   │   ├── author_profile
+│   │   │   │   └── route.ts
+│   │   │   ├── category
+│   │   │   │   └── route.ts
+│   │   │   ├── create-author
+│   │   │   │   └── route.ts
+│   │   │   ├── create-category
+│   │   │   │   └── route.ts
+│   │   │   ├── edit_news
+│   │   │   │   └── route.ts
+│   │   │   ├── forget-pass
+│   │   │   │   └── route.ts
+│   │   │   ├── get_archives
+│   │   │   │   └── route.ts
+│   │   │   ├── get_articles
+│   │   │   │   └── route.ts
+│   │   │   ├── get_author_articles
+│   │   │   │   └── route.ts
+│   │   │   ├── get_headlines
+│   │   │   │   └── route.ts
+│   │   │   ├── logout
+│   │   │   │   └── route.ts
+│   │   │   ├── reset-pass
+│   │   │   │   └── route.ts
+│   │   │   └── search_articles
+│   │   │       └── route.ts
+│   │   ├── archives
+│   │   │   └── [year]
+│   │   │       └── [month]
+│   │   │           ├── layout.tsx
+│   │   │           └── page.tsx
+│   │   ├── categories
+│   │   │   └── [category]
+│   │   │       ├── layout.tsx
+│   │   │       └── page.tsx
+│   │   ├── privacy-policy
+│   │   │   └── page.tsx
+│   │   ├── reset-pass
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── terms-of-services
+│   │   │   └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components
+│   │   ├── AdminDashboard.tsx
+│   │   ├── AdminNavbar.tsx
+│   │   ├── AuthorUpdateModal.tsx
+│   │   ├── BootstrapClient.tsx
+│   │   ├── ContentLoadSpinner.tsx
+│   │   ├── CreateCategoryModal.tsx
+│   │   ├── EmailTemplate.tsx
+│   │   ├── Footer.tsx
+│   │   ├── ImageCropper.tsx
+│   │   ├── ImageHandleModal.tsx
+│   │   ├── LogoutModal.tsx
+│   │   ├── MainWindow.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── NewsCard.tsx
+│   │   ├── NewsCRUDComponent.tsx
+│   │   ├── NewsItem.tsx
+│   │   ├── SearchModal.tsx
+│   │   ├── SideElement.tsx
+│   │   ├── SuperAdminCreateModals.tsx
+│   │   ├── ThemeChanger.tsx
+│   │   └── TopNews.tsx
+│   ├── database
+│   │   └── dbConfig.ts
+│   ├── helpers
+│   │   ├── common_func.ts
+│   │   ├── mailer.ts
+│   │   └── sanity.ts
+│   ├── models
+│   │   ├── AuthorModel.ts
+│   │   └── NewsModel.ts
+│   └── middleware.ts
+├── .env
+├── .eslintrc.json
+├── .gitignore
+├── next-env.d.ts
+├── next.config.mjs
+├── package.json
+├── README.md
+├── tsconfig.json
+└── yarn.lock
+```
+</details>
