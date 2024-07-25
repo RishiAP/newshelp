@@ -20,7 +20,7 @@ export async function uploadImage(base64Img:string):Promise<string>{
         throw new Error("Invalid image format");
     }
     const buffer=Buffer.from(base64Split[1],'base64');
-    const uploadData=await client.assets.upload('image',buffer);
+    const uploadData=await client.assets.upload('image',buffer,{filename:"image."+extension,contentType:extension=='svg'?"image/svg+xml":"image/"+extension});
     return uploadData.url;
 }
 

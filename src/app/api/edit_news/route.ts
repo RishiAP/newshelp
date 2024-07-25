@@ -171,7 +171,8 @@ export async function PUT(req: NextRequest) {
         const endOfDay = new Date();
         endOfDay.setHours(23, 59, 59, 999);
         const data = await req.json();
-        if (data.priority == "TopMost" && (await News.findOne({ priority: 'TopMost', createdOn: { $gte: startOfDay, $lte: endOfDay } })).slug!=slug) {
+        const news=await News.findOne({ priority: 'TopMost', createdOn: { $gte: startOfDay, $lte: endOfDay }},{slug:1});
+        if (data.priority == "TopMost" && news && news.slug!=slug) {
             return NextResponse.json({ error: "Topmost article already exists for today" }, { status: 422 });
         }
         if(data.priority=="null")

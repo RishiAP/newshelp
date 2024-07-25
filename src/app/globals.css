@@ -167,6 +167,11 @@
   font-size: 1rem !important;
 }
 }
+.ql-editor .ql-video{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-width: 800px !important;
+}
 .ql-snow .ql-editor img{
     width: auto !important;
 }
