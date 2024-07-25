@@ -18,8 +18,8 @@ export async function POST(req: NextRequest) {
             token=jwt.sign({_id:author._id,sessionToken:author.sessionToken},String(process.env.JWT_SECRET));
             serialized=serialize("jwtAccessToken",token,{
                 httpOnly:true,
-                // secure:process.env.NODE_ENV=="production",
-                secure:false,
+                secure:process.env.NODE_ENV=="production",
+                // secure:false,
                 sameSite:"strict",
                 maxAge:60*60*24*30,
                 path:"/"
