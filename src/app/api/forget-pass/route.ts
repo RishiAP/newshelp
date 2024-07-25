@@ -8,7 +8,7 @@ connect();
 export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
-        const token=crypto.randomBytes(32).toString('hex');
+        const token=crypto.randomBytes(parseInt(process.env.VERIFY_TOKEN_LENGTH? process.env.VERIFY_TOKEN_LENGTH:"32")).toString('hex');
         const author=await Author.findOneAndUpdate({email:data.email},{forgetPassToken:token,forgetPassTokenExpiryTime:Date.now()+1200000});
         if(author==null){
             return NextResponse.json({message:"Email not found"}, { status: 404 });

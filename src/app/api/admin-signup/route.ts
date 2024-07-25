@@ -8,7 +8,7 @@ connect();
 export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
-        const token=crypto.randomBytes(32).toString('hex');
+        const token=crypto.randomBytes(parseInt(process.env.VERIFY_TOKEN_LENGTH? process.env.VERIFY_TOKEN_LENGTH:"32")).toString('hex');
         let author;
         author=await Author.findOne({email:data.email});
         if(author && "verified" in author && author.verified){

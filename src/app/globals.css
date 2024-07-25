@@ -250,6 +250,10 @@ a:visited{
   font-weight: bolder;
 }
 
+.recent-article-img{
+  max-width: 100%;
+}
+
 @media screen and (max-width: 500px) {
   #profileImage{
     position: relative;

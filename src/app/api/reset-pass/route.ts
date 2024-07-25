@@ -7,6 +7,9 @@ connect();
 export async function POST(req: NextRequest) {
     try {
         const {email,password,token} = await req.json();
+        if(!token || token.length!=parseInt(process.env.VERIFY_TOKEN_LENGTH? process.env.VERIFY_TOKEN_LENGTH:"32")){
+            return NextResponse.json({message:"Resetting unsuccessful"}, { status: 401 });
+        }
         let author=await Author.findOne({email,forgetPassToken:token,forgetPassTokenExpiryTime:{$gt:Date.now()-1200000}});
         let hash,salt,saltRounds=10,sessionToken;
         if(author){
