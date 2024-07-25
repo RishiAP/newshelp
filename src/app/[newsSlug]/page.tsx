@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: { params: { newsSlug: string 
         type: "article",
         images: [
           {
-            url: new URL(article.topimage, baseUrl).toString(), // Construct absolute URL
+            url: article.topimage, // Construct absolute URL
             width: 800,
             height: 600,
             alt: article.title,
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: { params: { newsSlug: string 
         card: "summary_large_image",
         title: article.title,
         description: article.metadesc + "...",
-        image: new URL(article.topimage, baseUrl).toString(), // Construct absolute URL
+        image: article.topimage, // Construct absolute URL
         site: "@yourtwitterhandle",
       },
       robots: {
