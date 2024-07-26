@@ -71,7 +71,7 @@ const NewsItem = (props:{news?:Article,newsExist:boolean}) => {
   return (
     <div>
       <article className="blog-post position-relative">
-        <h2 className="display-5 mb-1">{props.news?.title}</h2>
+        <h1 className="display-6 mb-1">{props.news?.title}</h1>
         <div className="blog-post-meta m-0 d-flex justify-content-between align-items-center flex-wrap">
           <span>Published on {props.news? formatDate(new Date(props.news.createdOn)):""}</span>
           <span>{props.news && props.news.dateUpdated? `Last updated on ${formatDate(new Date(props.news.dateUpdated))}`:""}</span>

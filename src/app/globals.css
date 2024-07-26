@@ -253,6 +253,9 @@ a:visited{
 .recent-article-img{
   max-width: 100%;
 }
+.ql-editor p{
+  margin-bottom: 1rem !important;
+}
 
 @media screen and (max-width: 500px) {
   #profileImage{
