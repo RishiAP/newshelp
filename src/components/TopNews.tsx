@@ -28,7 +28,7 @@ const TopNews = (props:{topMostNews:Article_without_content|null,headlines:Artic
         <img id='topMostNewsImage' src={props.topMostNews.topimage} alt="" style={{objectFit:"contain",maxWidth:"500px",width:"50%"}} />
       </div>
       }
-    <div id='articles' className="row mb-2">
+    <div id='articles' className="mb-2">
       {
         props.headlines && props.headlines.map((news,index)=>{
           return (
