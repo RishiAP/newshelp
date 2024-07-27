@@ -7,7 +7,7 @@ connect();
 export async function POST(req: NextRequest) {
     try {
         const {name,email,password,token} = await req.json();
-        if(!token || token.length!=parseInt(process.env.VERIFY_TOKEN_LENGTH? process.env.VERIFY_TOKEN_LENGTH:"32")){
+        if(!token || token.length!=parseInt(process.env.VERIFY_TOKEN_LENGTH? process.env.VERIFY_TOKEN_LENGTH:"32")*2){
             return NextResponse.json({message:"Verification unsuccessful"}, { status: 401 });
         }
         let author=await Author.findOne({email,verifyToken:token,verificationExpiryTime:{$gt:Date.now()-1200000}});
