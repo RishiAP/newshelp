@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
         }
         author =await Author.findOneAndUpdate({email:data.email},{verifyToken:token,verificationExpiryTime:Date.now()+1200000});
         const emailHtml=EmailTemplate({link:`${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}`,message:"Your email has been registered with us. Please click on the button below to continue",buttonText:"Create account"});
-        const email_sent=await sendEmail('"News Website" <myqdiscuss@outlook.com>',data.email,"Create your News account",`Your email has been registered with us. Please click on the link to continue http://${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}`,emailHtml);
+        const email_sent=await sendEmail(`"News Website" <${process.env.SMTP_NOREPLY}>`,data.email,"Create your News account",`Your email has been registered with us. Please click on the link to continue http://${process.env.NEXT_PUBLIC_DOMAIN}/admin-signup?token=${token}`,emailHtml);
         return NextResponse.json({message:"email sent"}, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });

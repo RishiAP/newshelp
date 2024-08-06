@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({message:"Email not found"}, { status: 404 });
         }
         const emailHtml=EmailTemplate({link:`${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}`,message:"Please click on the link below to reset your password",buttonText:"Reset password"});
-        const email_sent=await sendEmail('"News Website" <myqdiscuss@outlook.com>',data.email,"Reset your News Password",`Please use the link to reset your password : http://${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}`,emailHtml);
+        const email_sent=await sendEmail(`"News Website" <${process.env.SMTP_NOREPLY}>`,data.email,"Reset your News Password",`Please use the link to reset your password : http://${process.env.NEXT_PUBLIC_DOMAIN}/reset-pass?token=${token}`,emailHtml);
         return NextResponse.json({message:"email sent"}, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 });
