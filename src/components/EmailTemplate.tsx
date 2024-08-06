@@ -379,7 +379,7 @@ const EmailTemplate=(props:{link:string,message:string,buttonText:string})=>{
                                                             <tbody>
                                                               <tr>
                                                                 <td style="font-size:0;height:30px;vertical-align:middle;width:30px;">
-                                                                  <a href="https://www.facebook.com/sharer/sharer.php?u=https://facebook.com/" target="_blank">
+                                                                  <a href="https://www.facebook.com/" target="_blank">
                                                                     <img alt="" height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:3px;display:block;" width="30">
                                                                   </a>
                                                                 </td>
@@ -419,7 +419,7 @@ const EmailTemplate=(props:{link:string,message:string,buttonText:string})=>{
                                                             <tbody>
                                                               <tr>
                                                                 <td style="font-size:0;height:30px;vertical-align:middle;width:30px;">
-                                                                  <a href="https://twitter.com/intent/tweet?url=https://twitter.com/" target="_blank">
+                                                                  <a href="https://twitter.com/" target="_blank">
                                                                     <img alt="" height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:3px;display:block;" width="30">
                                                                   </a>
                                                                 </td>
@@ -439,7 +439,7 @@ const EmailTemplate=(props:{link:string,message:string,buttonText:string})=>{
                                                             <tbody>
                                                               <tr>
                                                                 <td style="font-size:0;height:30px;vertical-align:middle;width:30px;">
-                                                                  <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://mjml.io/&amp;title=&amp;summary=&amp;source=" target="_blank">
+                                                                  <a href="https://www.linkedin.com/" target="_blank">
                                                                     <img alt="" height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png" style="border-radius:3px;display:block;" width="30">
                                                                   </a>
                                                                 </td>
@@ -529,44 +529,6 @@ const EmailTemplate=(props:{link:string,message:string,buttonText:string})=>{
       </tbody>
     </table>
   </div>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
 
 
 
