@@ -21,6 +21,6 @@ export default function RootLayout({
 
 
 export const metadata:Metadata={
-  title:"News website",
+  title:"News Help",
   description:"A news website made with Next.js"
 }

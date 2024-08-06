@@ -10,7 +10,7 @@ export default function CategoryLayout({
   }
 export async function generateMetadata({params}:{params:{category:string}}){
     return {
-        title: `${params.category} | News`,
+        title: `${params.category} | News Help`,
         description: `Latest news on ${params.category}`
     }
 }

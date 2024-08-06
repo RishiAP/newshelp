@@ -1,7 +1,7 @@
 const EmailTemplate=(props:{link:string,message:string,buttonText:string})=>{
   return (
    `<html lang="und" dir="auto" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head>
-  <title>Create your News Account</title>
+  <title>Create your News Help Account</title>
   <!--[if !mso]><!-->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!--<![endif]-->

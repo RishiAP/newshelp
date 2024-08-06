@@ -2,7 +2,7 @@ import BootstrapClient from "@/components/BootstrapClient";
 import { Metadata } from "next";
 
 export const metadata:Metadata={
-    title:"Forget Passowrd"
+    title:"Reset Password | News Help"
 }
 
 export default function AdminLayout({

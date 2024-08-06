@@ -22,7 +22,7 @@ export const LogoutModal = () => {
   <div className="modal-dialog">
     <div className="modal-content">
       <div className="modal-header">
-        <h1 className="modal-title fs-5" id="logoutModalLabel">Modal title</h1>
+        <h1 className="modal-title fs-5" id="logoutModalLabel">Are you sure you want to logout?</h1>
         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div className="modal-body d-flex flex-column gap-3">
