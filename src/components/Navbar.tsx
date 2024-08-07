@@ -29,10 +29,9 @@ export default function Navbar (props:{currentActive:string,setLoading?:React.Di
   <header className="border-bottom lh-1 py-3">
     <div className="row flex-nowrap justify-content-between align-items-center">
       <div className="col-4 pt-1">
-        <a className="link-secondary" href="#">Subscribe</a>
       </div>
       <div className="col-4 text-center">
-        <a className="blog-header-logo text-body-emphasis text-decoration-none" href="#">News Help</a>
+        <a className="blog-header-logo text-body-emphasis text-decoration-none" href="#">News <i className="bi bi-fire"></i> Help</a>
       </div>
       <div className="col-4 d-flex justify-content-end align-items-center">
         <button type="button" className="link-secondary" aria-label="Search" data-bs-toggle="modal" data-bs-target="#searchModal" style={{background:"none",border:"none",outline:"none"}} >

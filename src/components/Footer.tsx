@@ -14,18 +14,6 @@ const Footer = () => {
           <li className="nav-item mb-2"><Link href="/terms-of-services" className="nav-link p-0 text-body-secondary">Terms of Services</Link></li>
         </ul>
       </div>
-
-      <div className="">
-        <form>
-          <h5>Subscribe to our newsletter</h5>
-          <p>Monthly digest of what`s new and exciting from us.</p>
-          <div className="d-flex flex-column flex-sm-row w-100 gap-2">
-            <label htmlFor="newsletter1" className="visually-hidden">Email address</label>
-            <input id="newsletter1" type="text" className="form-control" placeholder="Email address"/>
-            <button className="btn btn-primary" type="button">Subscribe</button>
-          </div>
-        </form>
-      </div>
     </div>
 
     <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center py-3 my-4 border-top">

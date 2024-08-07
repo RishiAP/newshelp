@@ -6,6 +6,18 @@
 .blog-header-logo {
     font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
     font-size: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .blog-header-logo i{
+    color: #ff6142;
+  }
+  #admin-navbar-logo i::before{
+    vertical-align: 1em;
+  }
+  #admin-navbar-logo i{
+    color: #ff6142;
   }
   
   .blog-header-logo:hover {
@@ -273,6 +285,11 @@ a:visited{
   }
   #topMostNews{
     flex-direction: column-reverse;
+  }
+}
+@media screen and (max-width: 440px) {
+  .blog-header-logo{
+    font-size: 2rem;
   }
 }
 @media screen and (max-width: 768px) {
