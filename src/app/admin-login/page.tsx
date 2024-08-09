@@ -1,5 +1,7 @@
 "use client";
+import ThemeChanger from '@/components/ThemeChanger';
 import axios from 'axios';
+import Link from 'next/link';
 import React, { useState } from 'react'
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,7 +28,8 @@ const Page = () => {
   return (
     <main className='form-signin w-100 m-auto h-100 d-flex align-items-center'>
     <form onSubmit={submitSignup} className='w-100'>
-    <h1 className="h3 mb-3 fw-normal">Please Log In</h1>
+      <h1 className='text-center d-flex align-item-center justify-content-center'>News<i className='bi bi-fire' style={{color:"#ff6142"}}></i>Help</h1>
+    <h2 className="h3 mb-3 fw-normal text-center">Please Login</h2>
     <div className="input-cover-div">
     <div className="form-floating">
       <input type="email" className="form-control" id="email" placeholder="name@example.com" onInput={
@@ -39,7 +42,7 @@ const Page = () => {
     </div>
     <div className="input-cover-div">
     <div className="form-floating">
-      <input type="password" className="form-control" id="password" placeholder="Password" onInput={
+      <input type="password" className="form-control" id="password" placeholder="Password" style={{borderBottomLeftRadius:"var(--bs-border-radius)",borderBottomRightRadius:"var(--bs-border-radius)"}} onInput={
         (e:React.ChangeEvent<HTMLInputElement>)=>{
           setFormData({...formData,password:e.target.value});
         }
@@ -47,10 +50,15 @@ const Page = () => {
       <label htmlFor="password">Password</label>
     </div>
     </div>
-    <button className="btn btn-primary w-100 py-2" type="submit">Login</button>
-    <p className="mt-5 mb-3 text-body-secondary">© 2017–2024</p>
+    <button className="btn btn-primary w-100 py-2 mt-3" type="submit">Login</button>
+    <div className="d-flex justify-content-between mt-3">
+    <Link href="/reset-pass">Reset Password</Link>
+    <Link href="/admin-signup">Signup</Link>
+    </div>
+    <p className="mt-5 mb-3 text-body-secondary">NewsHelp | © 2024-2025</p>
   </form>
   <ToastContainer theme="dark" draggablePercent={60} position="top-center" draggable />
+  <ThemeChanger/>
     </main>
   )
 }

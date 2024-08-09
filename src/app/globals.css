@@ -148,6 +148,11 @@
   z-index: 2;
 }
 
+.form-signin .input-cover-div:last-of-type input{
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 .form-signin .input-cover-div:not(:first-of-type):not(:last-of-type) input{
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
@@ -160,11 +165,6 @@
   border-bottom-left-radius: 0;
 }
 
-.form-signin .input-cover-div:last-of-type input{
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
 .ql-container{
   font-size: 1.25rem !important;
   background: var(--bs-body-bg);
