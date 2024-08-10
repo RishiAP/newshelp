@@ -11,7 +11,7 @@ const Page = () => {
 
 <p>Welcome to NewsHelp!</p>
 
-<p>These terms and conditions outline the rules and regulations for the use of {"NewsHelp's"} Website, located at <a href={`${process.env.NEXT_PUBLIC_DOMAIN}`}>{process.env.NEXT_PUBLIC_DOMAIN}</a>.</p>
+<p>These terms and conditions outline the rules and regulations for the use of {"NewsHelp's"} Website, located at <a href={`${process.env.NEXT_PUBLIC_DOMAIN}`} target='_blank'>{process.env.NEXT_PUBLIC_DOMAIN}</a>.</p>
 
 <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use NewsHelp if you do not agree to take all of the terms and conditions stated on this page.</p>
 
