@@ -1,5 +1,6 @@
 import React from 'react'
 import { LogoutModal } from './LogoutModal';
+import Link from 'next/link';
 
 const AdminNavbar = (props:{setActionType:React.Dispatch<React.SetStateAction<string>>,actionType:string}) => {
   const setPage=(e:React.MouseEvent<HTMLButtonElement>)=>{
@@ -10,7 +11,7 @@ const AdminNavbar = (props:{setActionType:React.Dispatch<React.SetStateAction<st
     <LogoutModal/>
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
   <div className="container-fluid">
-    <a className="navbar-brand" id='admin-navbar-logo' href="/" style={{display:"flex",justifyContent:"center",alignItems:"center",color:"var(--bs-body-color) !important"}}>News <i className="bi bi-fire"></i> Help</a>
+    <Link className="navbar-brand" id='admin-navbar-logo' href="/" style={{display:"flex",justifyContent:"center",alignItems:"center",color:"var(--bs-body-color) !important"}}>News <i className="bi bi-fire"></i> Help</Link>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"></span>
     </button>
