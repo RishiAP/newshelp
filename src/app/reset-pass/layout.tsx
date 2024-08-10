@@ -2,7 +2,9 @@ import BootstrapClient from "@/components/BootstrapClient";
 import { Metadata } from "next";
 
 export const metadata:Metadata={
-    title:"Reset Password | News Help"
+    title:"Reset Password | NewsHelp",
+    category: "Password Reset",
+    manifest: '/manifest.json',
 }
 
 export default function AdminLayout({
@@ -11,9 +13,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-      <BootstrapClient/>
-    </html>
+    <>{children}<BootstrapClient/></>
   );
 }

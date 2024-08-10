@@ -2,7 +2,10 @@ import BootstrapClient from "@/components/BootstrapClient";
 import { Metadata } from "next";
 
 export const metadata:Metadata={
-    title:"Signup | News Help"
+    title:"Signup | NewsHelp",
+    description:"Create an account to manage your articles.",
+    category: "admin",
+    manifest: '/manifest.json',
 }
 
 export default function AdminLayout({
@@ -11,9 +14,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-      <BootstrapClient/>
-    </html>
+    <>{children}<BootstrapClient/></>
   );
 }

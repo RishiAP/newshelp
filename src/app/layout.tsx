@@ -21,6 +21,12 @@ export default function RootLayout({
 
 
 export const metadata:Metadata={
-  title:"News Help",
-  description:"A news website made with Next.js"
+  title:"NewsHelp",
+  description:"A news website made with Next.js",
+  robots:{
+    follow:true,
+    index:true
+  },
+  category: "news",
+  manifest: '/manifest.json',
 }

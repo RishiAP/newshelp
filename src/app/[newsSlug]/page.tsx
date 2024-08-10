@@ -20,7 +20,7 @@ export default async function Page({params}:{params:{newsSlug:string}}) {
 };
 export async function generateMetadata({ params }: { params: { newsSlug: string } }) {
   // Fetch the article and populate the author field
-  const article = JSON.parse(JSON.stringify(await News.findOne({ slug: params.newsSlug }).populate('author')));
+  const article = JSON.parse(JSON.stringify(await News.findOne({ slug: params.newsSlug }).populate('author').populate('category')));
 
   const baseUrl = process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000';
 
@@ -76,6 +76,7 @@ export async function generateMetadata({ params }: { params: { newsSlug: string 
         index: true,
         follow: true,
       },
+      category: article.category.value,
       additionalMetaTags: [
         {
           name: "author",

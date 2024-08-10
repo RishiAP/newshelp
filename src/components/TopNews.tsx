@@ -14,7 +14,7 @@ const TopNews = (props:{topMostNews:Article_without_content|null,headlines:Artic
     }
   }
   return (
-    <>
+    <div style={{minHeight:"600px"}}>
     {
       props.headlines==null || props.topMostNews!=null || props.headlines.length>0?
       <>
@@ -40,7 +40,7 @@ const TopNews = (props:{topMostNews:Article_without_content|null,headlines:Artic
       </>:<h1>No articles found!</h1>
     }
     
-    </>
+    </div>
   )
 }
 
