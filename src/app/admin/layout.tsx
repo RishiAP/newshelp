@@ -5,7 +5,7 @@ export const metadata:Metadata={
     title:"Admin Panel | NewsHelp",
     description:"Admin Panel for managing all your articles. Post, update or delete articles with ease.",
     category: "admin",
-    manifest: '/manifest.json',
+    manifest: '/admin_manifest.json',
 }
 
 export default function AdminLayout({
