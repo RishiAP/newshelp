@@ -9,7 +9,7 @@ const NewsCard = (props:{article:Article_without_content,onClick?:any}) => {
   return (
     <div className="card news-card mb-3" style={{height:"fit-content"}}>
   <div className="row g-0">
-    <div className="col-md-4 d-flex justify-content-start align-items-center">
+    <div className="col-md-4 d-flex news-card-image align-items-center">
         <Link href={"/"+props.article.slug} className='stretched-link' onClick={props.onClick} >
       <Image src={props.article.topimage} width={400} height={200} className="img-fluid rounded-start" alt="..." style={{maxWidth:"100%", maxHeight:"300px"}}/>
         </Link>
