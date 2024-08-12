@@ -62,6 +62,7 @@ const NewsSchema=new Schema(
         }
     }
 )
+NewsSchema.index({slug:'text'});
 const News=mongoose.models.News || mongoose.model('News',NewsSchema);
 const Category=mongoose.models.Category || mongoose.model('Category',CategorySchema);
 
