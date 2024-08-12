@@ -19,8 +19,8 @@ const Footer = () => {
     <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center py-3 my-4 border-top">
       <p>© 2024-2025 NewsHelp. All rights reserved.</p>
       <ul className="list-unstyled d-flex">
-        <li className="ms-3"><a className="link-body-emphasis" target="_blank" href="https://twitter.com/RishiProgrammer"><i className='bi bi-twitter fs-4'></i></a></li>
-        <li className="ms-3"><a className="link-body-emphasis" target="_blank" href="https://instagram.com/rishi_the_programmer"><i className='bi bi-instagram fs-4'></i></a></li>
+        <li className="ms-3"><a className="link-body-emphasis" target="_blank" href="https://twitter.com"><i className='bi bi-twitter fs-4'></i></a></li>
+        <li className="ms-3"><a className="link-body-emphasis" target="_blank" href="https://instagram.com"><i className='bi bi-instagram fs-4'></i></a></li>
         <li className="ms-3"><a className="link-body-emphasis" target="_blank" href="https://facebook.com"><i className='bi bi-facebook fs-4'></i></a></li>
       </ul>
     </div>
