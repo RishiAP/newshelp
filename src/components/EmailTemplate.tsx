@@ -108,7 +108,7 @@ const EmailTemplate=(props:{link:string,message:string,buttonText:string})=>{
                           <tbody>
                             <tr>
                               <td style="width:550px;">
-                                <img alt="Banner Image" src="https://res.cloudinary.com/dnxfq38fr/image/upload/v1723002089/News_Help_i4kxne.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="550" height="auto" />
+                                <img alt="Banner Image" src="`+process.env.NEWSHELP_EMAIL_BANNER+`" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="550" height="auto" />
                               </td>
                             </tr>
                           </tbody>
