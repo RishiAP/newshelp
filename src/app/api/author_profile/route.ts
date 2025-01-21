@@ -47,18 +47,24 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
             }
         }
-        const {name,bio,instagram,twitter,facebook}=await req.json();
-        const socialLinks={instagram,twitter,facebook};
-        if(instagram==null || instagram.length==0){
-            delete socialLinks.instagram;
+        const { name, bio, socialLinks } = await req.json();
+
+        // Create a mutable object for socialLinks or initialize it if it's null
+        const updatedSocialLinks: Record<string, string | null> | null = socialLinks
+        ? { ...socialLinks }
+        : null;
+
+        // Remove keys with `null` or empty string values, if socialLinks is not null
+        if (updatedSocialLinks) {
+            if (!updatedSocialLinks.instagram)
+                delete updatedSocialLinks.instagram;
+            if (!updatedSocialLinks.twitter)
+                delete updatedSocialLinks.twitter;
+            if (!updatedSocialLinks.facebook)
+                delete updatedSocialLinks.facebook;
         }
-        if(twitter==null || twitter.length==0){
-            delete socialLinks.twitter;
-        }
-        if(facebook==null || facebook.length==0){
-            delete socialLinks.facebook;
-        }
-        const updatedAuthor=await Author.findByIdAndUpdate(author._id,{name,bio,socialLinks},{projection:{_id:0,name:1,bio:1,socialLinks:1,email:1,profilePic:1,createdOn:1,isSuperAdmin:1},new:true});
+
+        const updatedAuthor=await Author.findByIdAndUpdate(author._id,{name,bio,socialLinks:updatedSocialLinks},{projection:{_id:0,name:1,bio:1,socialLinks:1,email:1,profilePic:1,createdOn:1,isSuperAdmin:1},new:true});
         if(updatedAuthor){
             return NextResponse.json({author:updatedAuthor},{status:200});
         }

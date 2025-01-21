@@ -1,12 +1,13 @@
 "use client";
 import axios from 'axios';
-import React, { ReactEventHandler } from 'react'
+import React, { ReactEventHandler, useState } from 'react'
 import ReactCrop, { Crop, PercentCrop, PixelCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import { Admin } from './AdminDashboard';
+import { toast } from 'react-toastify';
 
 export const ImageCropper = (props:{src:null|string,crop:Crop,croppedImageUrl:null|Blob,onCropComplete:(crop: PixelCrop, percentageCrop: PercentCrop) => void,setCrop:React.Dispatch<React.SetStateAction<Crop>>,onImageLoaded:ReactEventHandler<HTMLImageElement>,setAuthor:React.Dispatch<React.SetStateAction<Admin>>}) => {
-
+    const [isUploading, setIsUploading] = useState(false);
     async function blobToBase64(blob:Blob):Promise<string>{
         return new Promise((resolve,reject)=>{
             const reader = new FileReader();
@@ -16,15 +17,19 @@ export const ImageCropper = (props:{src:null|string,crop:Crop,croppedImageUrl:nu
         });
     }
     async function uploadAdminImage(){
+      setIsUploading(true);
         axios.put('/api/author_profile', {base64Image:await blobToBase64(props.croppedImageUrl as Blob)})
         .then(res => {
           props.setAuthor(res.data);
           (document.getElementById("profileImageSettingModal")?.querySelector(".btn-close") as HTMLButtonElement)?.click();
           // Handle success response
+          toast.success("Profile pic updated successfully",{position:"top-center",theme: document.querySelector("html")?.getAttribute("data-theme") as "light"|"dark"});
         })
         .catch(error => {
           console.error('Error during upload:', error);
           // Handle error
+        }).finally(()=>{
+          setIsUploading(false);
         });
     }
   return (
@@ -57,8 +62,11 @@ export const ImageCropper = (props:{src:null|string,crop:Crop,croppedImageUrl:nu
       )}
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" className="btn btn-primary" onClick={uploadAdminImage}>Save changes</button>
+        <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" className="btn btn-success d-flex gap-2 align-items-center justify-content-center" onClick={uploadAdminImage} disabled={isUploading}>
+          <span className={`spinner-border spinner-border-sm ${isUploading?"":"d-none"}`} aria-hidden="true"></span>
+          <span role="status">{isUploading?"Setting Image....":"Set Image"}</span>
+        </button>
       </div>
     </div>
   </div>

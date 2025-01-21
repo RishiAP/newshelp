@@ -38,3 +38,5 @@ next-env.d.ts
 
 /public/uploads
 certificates
+
+package-lock.json

@@ -231,19 +231,26 @@ export default function AdminDashboard(){
     },[setSrc,setCroppedImageUrl]);
   return (
     <>
-    <AuthorUpdateModal setAuthor={setAuthor} />
-    <ImageHandleModal setAuthor={setAuthor}/>
+    <AuthorUpdateModal author={author} setAuthor={setAuthor} />
+    <ImageHandleModal author={author} setAuthor={setAuthor}/>
     <ImageCropper src={src} crop={crop} croppedImageUrl={croppedImageUrl} onCropComplete={onCropComplete} setCrop={setCrop} onImageLoaded={onImageLoaded} setAuthor={setAuthor} />
         <div className="d-flex justify-content-between mb-3" id='profileInfo'>
-            <div id="profileImage" className='mt-5' data-bs-toggle="modal" data-bs-target="#imageHandleModal">
+            <div id="profileImage" className='mt-5 w-auto position-relative' onClick={()=>{
+              if(author.profilePic)
+                (document.getElementById("imageHandleModalTriggerButton") as HTMLButtonElement).click();
+              else
+                (document.getElementById("adminImageInput") as HTMLInputElement).click();
+            }}>
+              <button type="button" className="btn btn-link d-none" id="imageHandleModalTriggerButton" data-bs-toggle="modal" data-bs-target="#imageHandleModal"></button>
                 {
                     author.profilePic? <img src={author.profilePic} alt="Profile Picture" className="img-fluid" />:<i className="bi bi-person-circle"></i>
                 }
                 <label htmlFor="adminImageInput">
                 <input type="file" accept="image/*" id="adminImageInput" onChange={onSelectFile} className='d-none' />
                 </label>
+                <div className="overlay d-flex justify-content-center align-items-center w-100 position-absolute bottom-0 left-0">{author.profilePic?"Change/Remove":"Choose"} Image</div>
             </div>
-            <div id="authorInfo">
+            <div id="authorInfo" className='w-50'>
                 <div className='d-flex justify-content-between align-items-center'><p className='d-flex align-items-center gap-2 fs-3 m-0'><i className="bi bi-person-check user-icon"></i> <span style={{marginTop:"0.85rem"}}><span className='fs-3'>{author.name}</span></span></p><button type='button' onClick={setAuthorData} data-bs-toggle="modal" data-bs-target="#authorUpdateModal" style={{border:"none",outline:"none",background:"none"}}><i className="bi bi-gear-wide fs-4 settings-icon"></i></button></div>
                 <p className='d-flex align-items-center gap-2 fs-4 mb-0'><i className="bi bi-envelope-check email-icon"></i> <span className='mt-2'><span className='fs-5'>{author.email}</span></span></p>
                 {
