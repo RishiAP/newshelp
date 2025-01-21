@@ -41,7 +41,7 @@ export const ImageHandleModal = (props:{author:Admin,setAuthor:React.Dispatch<Re
         <button type="button" className="btn btn-success btn-lg" onClick={changeProfilePic}>Change Profile Pic</button>
         <button type="button" className="btn btn-secondary btn-lg"  data-bs-dismiss="modal">Cancel</button></>:
         <>
-        <button type="button" className="btn btn-outline-danger btn-lg" onClick={removeProfilePic} disabled={removing}>
+        <button type="button" className="btn btn-outline-danger btn-lg d-flex gap-2 align-items-center justify-content-center" onClick={removeProfilePic} disabled={removing}>
         <span className={`spinner-border spinner-border-lg ${removing?"":"d-none"}`} aria-hidden="true"></span>
         <span role="status">{removing?"Removing...":"Remove"}</span>
         </button>

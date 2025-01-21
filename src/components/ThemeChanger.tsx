@@ -1,23 +1,24 @@
 "use client";
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const ThemeChanger = () => {
+  const [theme, setTheme] = useState(localStorage.getItem('theme'));
     useEffect(() => {
-        let theme=localStorage.getItem('theme');
         if(theme){
+          if(theme==="auto")
+            window.matchMedia('(prefers-color-scheme: dark)').matches?document.documentElement.setAttribute('data-bs-theme', 'dark'):document.documentElement.setAttribute('data-bs-theme', 'light');
+          else
             document.documentElement.setAttribute('data-bs-theme', theme);
         }
         else{
             if(window.matchMedia('(prefers-color-scheme: dark)').matches){
-                document.documentElement.setAttribute('data-bs-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                theme='dark';
+              document.documentElement.setAttribute('data-bs-theme', 'dark');
             }
             else{
-                document.documentElement.setAttribute('data-bs-theme', 'light');
-                localStorage.setItem('theme', 'light');
-                theme='light';
+              document.documentElement.setAttribute('data-bs-theme', 'light');
             }
+            localStorage.setItem('theme', 'auto');
+            setTheme('auto');
         }
         document.querySelector('.bd-mode-toggle .active')?.classList.remove('active');
         document.querySelector(`.bd-mode-toggle [data-bs-theme-value="${theme}"]`)?.classList.add('active');
@@ -27,12 +28,12 @@ const ThemeChanger = () => {
         const theme=e.currentTarget.getAttribute('data-bs-theme-value') as string;
         e.currentTarget.parentElement?.parentElement?.querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
         e.currentTarget.classList.add('active');
+        localStorage.setItem('theme', theme);
         if(theme==='auto'){
             window.matchMedia('(prefers-color-scheme: dark)').matches?document.documentElement.setAttribute('data-bs-theme', 'dark'):document.documentElement.setAttribute('data-bs-theme', 'light');
         }
         else{
             document.documentElement.setAttribute('data-bs-theme', theme);
-            localStorage.setItem('theme', theme);
         }
     }
   return (
@@ -59,21 +60,21 @@ const ThemeChanger = () => {
       </button>
       <ul className="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text" style={{}}>
         <li>
-          <button type="button" className="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false" onClick={handleThemeChange}>
+          <button type="button" className={`dropdown-item d-flex align-items-center ${theme==="light"?"active":""}`} data-bs-theme-value="light" aria-pressed="false" onClick={handleThemeChange}>
             <svg className="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
             Light
             <svg className="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
           </button>
         </li>
         <li>
-          <button type="button" className="dropdown-item d-flex align-items-center active" data-bs-theme-value="dark" aria-pressed="true" onClick={handleThemeChange}>
+          <button type="button" className={`dropdown-item d-flex align-items-center ${theme==="dark"?"active":""}`} data-bs-theme-value="dark" aria-pressed="true" onClick={handleThemeChange}>
             <svg className="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
             Dark
             <svg className="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
           </button>
         </li>
         <li>
-          <button type="button" className="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false" onClick={handleThemeChange}>
+          <button type="button" className={`dropdown-item d-flex align-items-center ${theme==="auto"?"active":""}`} data-bs-theme-value="auto" aria-pressed="false" onClick={handleThemeChange}>
             <svg className="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
             Auto
             <svg className="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
