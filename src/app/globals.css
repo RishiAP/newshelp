@@ -335,7 +335,8 @@ a:visited{
     font-size: 14rem;
   }
   #profileImage{
-    width: 100% !important;
+    width: auto !important;
+    margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;

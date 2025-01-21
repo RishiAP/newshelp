@@ -24,7 +24,9 @@ export const ImageHandleModal = (props:{author:Admin,setAuthor:React.Dispatch<Re
       document.getElementById("adminImageInput")?.click();
     }
     useEffect(()=>{
-        setRemoveOptionDisplay(false);
+        document.querySelector("#imageHandleModal")?.addEventListener("hidden.bs.modal",()=>{
+            setRemoveOptionDisplay(false);
+        });
     },[]);
   return (
     <div className="modal fade" id="imageHandleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
