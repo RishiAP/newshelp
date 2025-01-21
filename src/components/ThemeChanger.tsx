@@ -2,39 +2,33 @@
 import React, { useEffect, useState } from 'react'
 
 const ThemeChanger = () => {
-  const [theme, setTheme] = useState(localStorage.getItem('theme'));
+  const [theme, setTheme] = useState("auto");
     useEffect(() => {
-        if(theme){
-          if(theme==="auto")
-            window.matchMedia('(prefers-color-scheme: dark)').matches?document.documentElement.setAttribute('data-bs-theme', 'dark'):document.documentElement.setAttribute('data-bs-theme', 'light');
-          else
-            document.documentElement.setAttribute('data-bs-theme', theme);
-        }
-        else{
-            if(window.matchMedia('(prefers-color-scheme: dark)').matches){
-              document.documentElement.setAttribute('data-bs-theme', 'dark');
-            }
-            else{
-              document.documentElement.setAttribute('data-bs-theme', 'light');
-            }
-            localStorage.setItem('theme', 'auto');
-            setTheme('auto');
-        }
-        document.querySelector('.bd-mode-toggle .active')?.classList.remove('active');
-        document.querySelector(`.bd-mode-toggle [data-bs-theme-value="${theme}"]`)?.classList.add('active');
+      setTheme(localStorage.getItem('theme')||"auto");
     }, [])
+    useEffect(() => {
+      if(theme){
+        if(theme==="auto")
+          window.matchMedia('(prefers-color-scheme: dark)').matches?document.documentElement.setAttribute('data-bs-theme', 'dark'):document.documentElement.setAttribute('data-bs-theme', 'light');
+        else
+          document.documentElement.setAttribute('data-bs-theme', theme);
+      }
+      else{
+          if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+          }
+          else{
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+          }
+          localStorage.setItem('theme', 'auto');
+          setTheme('auto');
+      }
+    },[theme]);
     
     function handleThemeChange(e:React.MouseEvent<HTMLElement>) {
         const theme=e.currentTarget.getAttribute('data-bs-theme-value') as string;
-        e.currentTarget.parentElement?.parentElement?.querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
-        e.currentTarget.classList.add('active');
         localStorage.setItem('theme', theme);
-        if(theme==='auto'){
-            window.matchMedia('(prefers-color-scheme: dark)').matches?document.documentElement.setAttribute('data-bs-theme', 'dark'):document.documentElement.setAttribute('data-bs-theme', 'light');
-        }
-        else{
-            document.documentElement.setAttribute('data-bs-theme', theme);
-        }
+        setTheme(theme);
     }
   return (
     <>
