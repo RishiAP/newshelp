@@ -50,7 +50,7 @@ const Page = () => {
     }
   },[]);
   return (
-    <main className='form-signin w-100 m-auto d-flex align-items-center'>
+    <main className='form-signin w-100 m-auto h-auto d-flex align-items-center' style={{minHeight:"100%"}}>
     <form onSubmit={submitSignup} className='w-100'>
     <h1 className='text-center d-flex align-item-center justify-content-center'>News<i className='bi bi-fire' style={{color:"#ff6142"}}></i>Help</h1>
     <h2 className="h3 mb-3 fw-normal text-center">Please Signup</h2>
