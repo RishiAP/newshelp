@@ -33,8 +33,10 @@ export default function Home() {
   const [newsSlug, setNewsSlug] = useState("");
   const [showEditor, setShowEditor] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
+    setAlertMessage("");
     setFormData({
       title: "",
       topimage: "",
@@ -133,6 +135,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setAlertMessage("");
     const delayDebounceFn=setTimeout(() => {
       if(newsSlug=="") return;
       axios
@@ -146,7 +149,7 @@ export default function Home() {
           setShowEditor(true);
         }
         else{
-          displayMsg("error","Article not found!",undefined,3000);
+          setAlertMessage("Article not found! ☹️");
         }
         setLoading(false);
         })
@@ -157,18 +160,18 @@ export default function Home() {
     return () => clearTimeout(delayDebounceFn);
   },[newsSlug]);
 
-  const displayMsg=(type:string,msg:string,toastId:undefined|string=undefined,autoClose:number|false=5000)=>{
-    switch(type){
-      case "success":
-        toast.success(msg,{position: "top-center",autoClose,toastId});
-        break;
-      case "error":
-        toast.error(msg,{position: "top-center",autoClose,toastId});
-        break;
-      default:
-        toast(msg,{position: "top-center",autoClose,toastId});
-    }
-  }
+  // const displayMsg=(type:string,msg:string,toastId:undefined|string=undefined,autoClose:number|false=5000)=>{
+  //   switch(type){
+  //     case "success":
+  //       toast.success(msg,{position: "top-center",autoClose,toastId});
+  //       break;
+  //     case "error":
+  //       toast.error(msg,{position: "top-center",autoClose,toastId});
+  //       break;
+  //     default:
+  //       toast(msg,{position: "top-center",autoClose,toastId});
+  //   }
+  // }
 
   const asyncToast=(p:AxiosPromise,pending:string|ReactElement,success:string|ReactElement,error:string|ReactElement)=>{
     toast.promise(
@@ -236,6 +239,8 @@ export default function Home() {
           )}
           {
             <ContentLoadSpinner loading={loading} classProperties="w-100" />
+          }{
+            alertMessage!=""?<div className="alert alert-danger d-flex justify-content-center">{alertMessage}</div>:null
           }
           {showEditor && (
             <NewsCRUDComponent

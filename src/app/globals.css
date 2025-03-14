@@ -27,7 +27,14 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
   }
-  
+  .modal h1, 
+.modal h2, 
+.modal h3, 
+.modal h4, 
+.modal h5, 
+.modal h6 {
+  font-family: inherit; /* Or set a different font */
+}
   .flex-auto {
     flex: 0 0 auto;
   }
@@ -286,6 +293,10 @@ a:visited{
 }
 .news-card-image{
   justify-content: start;
+}
+.google-signin-button::before{
+  display: flex;
+  align-items: center;
 }
 
 @media screen and (max-width: 500px) {
